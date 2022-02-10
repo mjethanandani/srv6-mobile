@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="rfc7991bis.rnc"?>  <!-- Required for schema validation and schema-aware editing -->
+<!-- <?xml-stylesheet type="text/xsl" href="rfc2629.xslt" ?> -->
+<!-- This third-party XSLT can be enabled for direct transformations in XML processors, including most browsers -->
+
+
+<!DOCTYPE rfc [
+  <!ENTITY nbsp    "&#160;">
+  <!ENTITY zwsp   "&#8203;">
+  <!ENTITY nbhy   "&#8209;">
+  <!ENTITY wj     "&#8288;">
+]>
+<!-- If further character entities are required then they should be added to the DOCTYPE above.
+     Use of an external entity file is not recommended. -->
+
+<rfc
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  category="std"
+  consensus="true"
+  docName="draft-mahesh-spring-srv6-mobile-yang-latest"
+  ipr="trust200902"
+  obsoletes=""
+  submissionType="IETF"
+  updates=""
+  xml:lang="en"
+  version="3">
+
+  <front>
+    <title abbrev="SRv6 Mobile YANG Model">A YANG Model for SRv6 Mobile User Plane</title>
+    <seriesInfo name="Internet-Draft" value="draft-mahesh-spring-srv6-mobile-yang-latest"/>
+   
+    <author fullname="Mahesh Jethanandani" initials="M." role="editor" surname="Jethanandani">
+      <organization>Arrcus, Inc</organization>
+      <address>
+        <postal>
+          <street/>
+          <city/>
+          <region/>
+          <code/>
+          <country/>
+        </postal>        
+        <phone/>
+        <email>mjethanandani@gmail.com</email>  
+        <uri/>
+      </address>
+    </author>
+    <author fullname="Tetsuya Murakami" initials="T." surname="Murakami">
+      <organization>Arrcus, Inc</organization>
+      <address>
+        <postal>
+          <street/>
+          <city/>
+          <region/>
+          <code/>
+          <country/>
+        </postal>        
+        <phone/>
+        <email>tetsuya@arrcus.com</email>  
+        <uri/>
+      </address>
+    </author>
+   
+    <date/>
+    <area>Routing</area>
+    <workgroup>Spring</workgroup>
+    <keyword>srv6</keyword>
+    <keyword>yang</keyword>
+
+    <abstract>
+      <t>This document defines a YANG data model for configuration
+      and management of SRv6 configuration for the mobile network.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    
+    <section>
+      <name>Introduction</name>
+      <t>In mobile networks, mobility systems provide connectivity
+      over a wireless link to stationary and non-stationary nodes.
+      The user-plane establishes a tunnel between the mobile node
+      and its anchor node over IP-based backhaul and core networks</t>
+      
+      <t>This document describes a <xref target="RFC7950">YANG 1.1
+      </xref> data model for the Segment Routing IPv6 (SRv6) user
+      plane of mobile networks.</t>
+      
+      <t>The model conforms to the <xref target="RFC8342">NMDA</xref>
+      architecture.</t>
+      
+      <section>
+        <name>Requirements Language</name>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+          "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT
+          RECOMMENDED", "MAY", and "OPTIONAL" in this document are to 
+	  be interpreted as described in BCP 14 <xref 
+	  target="RFC2119"/> <xref target="RFC8174"/> when, and 
+	  only when, they appear in all capitals, as shown here.</t>
+      </section>
+
+      <section>
+	<name>Acronyms</name>
+	<ol>
+          <li>Ordered list item [REPLACE/DELETE]</li>
+	</ol>
+      
+	<ul>
+          <li>Bulleted list item [REPLACE/DELETE]</li>
+	</ul>
+      
+	<table>
+          <thead>
+            <!-- [REPLACE/DELETE] a table header is optional -->
+            <tr><th>Acronym</th><th>Definition</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SRv6</td><td>Segment Routing version 6</td></tr>
+          </tbody>
+	</table>
+      </section>
+    </section>
+
+    <section>
+      <name>Tree Diagram</name>
+      <t>An abridged version of the tree diagram is shown here.
+      Annotations used in the diagram are defined in <xref
+      target="RFC8340">YANG Tree Diagrams </xref>.</t>
+      <figure>
+        <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD-sub-tree.txt)
+
+]]></artwork>
+      </figure>
+
+    </section>
+    <section>
+      <name>YANG Model</name>
+      <t>The YANG model is divided into two parts. The first part of
+      the model augments the <xref target="I-D.ietf-idr-bgp-model">
+      BGP Model for Service Provider Network</xref> for the BGP
+      configuration, while the second part augments the BGP Routing
+      Policy model.</t>
+      
+      <t>It imports <xref target="RFC6991">Common YANG Data Types
+      </xref>, <xref target="RFC8349">A YANG Data Model for Routing
+      Management(NMDA Version)</xref>, <xref target="RFC8529">YANG
+      Data Model for Network Instances</xref>, <xref
+      target="RFC9067">A YANG Data Model for Routing Policy</xref>,
+      and <xref target="I-D.ietf-idr-bgp-model">BGP Model for Service
+      Provider Network</xref>.</t>
+      
+      <figure>
+        <name>Source [REPLACE]</name>
+          <artwork><![CDATA[
+<CODE BEGINS> file "ietf-srv6-mobile@YYYY-MM-DD.yang"
+INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD.yang)
+<CODE ENDS>
+
+]]></artwork>
+        <!-- [CHECK] markers="true" means that the rendered file will have <CODE BEGINS> and <CODE ENDS> added -->
+      </figure>
+    </section>   
+    
+    <section anchor="IANA">
+    <!-- All drafts are required to have an IANA considerations section. See RFC 8126 for a guide.-->
+      <name>IANA Considerations</name>
+      <t>This memo includes no request to IANA. [CHECK]</t>
+    </section>
+    
+    <section anchor="Security">
+      <!-- All drafts are required to have a security considerations section. See RFC 3552 for a guide. -->
+      <name>Security Considerations</name>
+      <t>This document should not affect the security of the Internet. [CHECK]</t>
+    </section>
+    
+    <!-- NOTE: The Acknowledgements and Contributors sections are at the end of this template -->
+  </middle>
+
+  <back>
+    <references>
+      <name>References</name>
+      <references>
+        <name>Normative References</name>
+        
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.2119.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.6991.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7950.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8340.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8342.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8349.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8529.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9067.xml"/>
+	<?rfc include='reference.I-D.ietf-idr-bgp-model.xml'?>
+        <!-- The recommended and simplest way to include a well known reference -->
+        
+      </references>
+ 
+      <references>
+        <name>Informative References</name>
+
+      </references>
+    </references>
+    
+    <section>
+      <name>Appendix 1 Complete Tree Diagram</name>
+      <t>Here is a complete tree diagram for the configuration and
+      operational part of the model.</t>
+      <figure>
+        <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD-tree.txt)
+
+]]></artwork>
+      </figure>
+    </section>
+
+    <section anchor="Acknowledgements" numbered="false">
+      <!-- [REPLACE/DELETE] an Acknowledgements section is optional -->
+      <name>Acknowledgements</name>
+      <t>This template uses extracts from templates written by Pekka Savola, Elwyn Davies and 
+        Henrik Levkowetz. [REPLACE]</t>
+    </section>
+    
+    <section anchor="Contributors" numbered="false">
+      <!-- [REPLACE/DELETE] a Contributors section is optional -->
+      <name>Contributors</name>
+      <t>Thanks to all of the contributors. [REPLACE]</t>
+      <!-- [CHECK] it is optional to add a <contact> record for some or all contributors -->
+    </section>
+    
+ </back>
+</rfc>
