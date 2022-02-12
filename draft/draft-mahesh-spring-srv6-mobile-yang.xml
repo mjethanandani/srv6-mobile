@@ -114,7 +114,7 @@
             <tr><th>Acronym</th><th>Definition</th></tr>
           </thead>
           <tbody>
-            <tr><td>SRv6</td><td>Segment Routing version 6</td></tr>
+            <tr><td>SRv6</td><td>Segment Routing over v6</td></tr>
           </tbody>
 	</table>
       </section>

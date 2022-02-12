@@ -19,6 +19,11 @@ module ietf-srv6-mobile {
       "RFC 8349, A YANG Data Model for Routing Management
        (NMDA Version).";
   }
+  import ietf-routing-types {
+    prefix rt-types;
+    reference
+      "RFC 8294: Common YANG Types for the Routing Area.";
+  }
   import ietf-routing-policy {
     prefix rt-pol;
     reference
@@ -32,6 +37,12 @@ module ietf-srv6-mobile {
   }
   import ietf-bgp-policy {
     prefix bp;
+    reference
+      "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
+       Network.";
+  }
+  import ietf-bgp-types {
+    prefix bt;
     reference
       "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
        Network.";
@@ -128,6 +139,73 @@ module ietf-srv6-mobile {
   /*
    * Identities
    */
+  identity srte-policy-ipv6 {
+    base bt:afi-safi-type;
+    description
+      "Segment Routing Traffic Engineering (AFI,SAFI = ?,?)";
+    reference
+      "RFC XXXX: A YANG Model for BGP configuration in mobile 
+       networks.";
+  }
+
+  identity label-allocation-mode {
+    description
+      "Base identity to be used to express types of label allocation
+       strategies to be used within a network instance";
+  }
+
+  identity label-per-prefix {
+    base label-allocation-mode;
+    description
+      "A label is to be allocated per prefix entry in the RIB for the
+       network instance";
+  }
+
+  identity label-per-nexthop {
+    base label-allocation-mode;
+    description
+      "A label is to be allocated per nexthop entry in the RIB for
+       the network instance";
+  }
+
+  identity label-instance {
+    base label-allocation-mode;
+    description
+      "A single label is to be used for the instance";
+  }
+
+  identity sid-allocation-mode {
+    description
+      "Base identity to be used to express types of SRv6 segment ID
+       allocation strategies to be used within a network instance.";
+  }
+
+  identity sid-per-nexthop {
+    base sid-allocation-mode;
+    description
+      "A segment ID is to be allocated per nexthop entry in the RIB
+       for the network instance";
+  }
+
+  identity sid-instance {
+    base sid-allocation-mode;
+    description
+      "A single segment ID is to be used for the instance";
+  }
+
+  identity sid-per-nexthop-no-transportation {
+    base sid-allocation-mode;
+    description
+      "A segment ID is to be allocated per nexthop entry in the
+       RIB for the network instance";
+  }
+
+  identity sid-instance-no-transportation {
+    base sid-allocation-mode;
+    description
+      "A single segment ID is to be used for the instance";
+  }
+
   identity mobile-interface-type {
     description
       "Base identity for different mobile interfaces.";
@@ -152,6 +230,59 @@ module ietf-srv6-mobile {
     description
       "Augmentation of the BGP global configuration to add srv6
        mobile configuration.";
+
+    leaf route-distinguisher {
+      type rt-types:route-distinguisher;
+      description
+        "The route distinguisher that should be used for the local
+         VRF or VSI instance when it is signalled via BGP.";
+    }
+
+    leaf label-allocation-mode {
+      type identityref {
+        base label-allocation-mode;
+      }
+      must "not(../sid-allocation-mode)" {
+        error-message "label-allocation-mode and sid-allocation-mode"
+                    + "cannot co-exist";
+      }
+      must "not(/rt:routing/rt:control-plane-protocols" +
+           "/rt:control-plane-protocol" +
+           "/bgp:bgp/bgp:global/srv6/mobile/encapsulation/config" +
+	   "/locator | " +
+           "/rt:routing/rt:control-plane-protocols" +
+	   "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+           "/srv6/locator)" {
+        error-message "SRv6 configurations must be removed first";
+      }
+      description
+        "The label allocation mode to be used for L3 entries
+         in the network instance";
+    }
+
+    leaf sid-allocation-mode {
+      type identityref {
+        base sid-allocation-mode;
+      }
+      must "not(../label-allocation-mode)" {
+        error-message "label-allocation-mode and sid-allocation-mode "
+	            + "cannot co-exist";
+      }
+      must "boolean(/rt:routing/rt:control-plane-protocols" +
+           "/rt:control-plane-protocol" +
+           "/bgp:bgp/bgp:global/srv6/mobile/encapsulation/locator |" +
+           "/rt:routing/rt:control-plane-protocols" +
+	   "/rt:control-plane-protocol/bgp:bgp/bgp:global/srv6" +
+	   "/mobile/decapsulations/decapsulation/locator |" +
+	   "/rt:routing/rt:control-plane-protocols" +
+	   "/rt:control-plane-protocol/bgp:bgp/bgp:global/srv6" +
+	   "/locator)" {
+        error-message "SRv6 locator name must be configured";
+      }
+      description
+        "The segment ID allocation mode to be used for L3 entries
+         in the network instance";
+    }
 
     container srv6 {
       description
@@ -340,15 +471,55 @@ module ietf-srv6-mobile {
     }
   }
 
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+          "/bgp:route-selection-options" {
+
+    description
+      "Augmentation of the BGP global configuration for
+       route selection options to add srv6 mobile configuration.";
+
+    leaf selection-deferral-time {
+      type uint16 {
+        range 1..3600;
+      }
+      default 300;
+      description
+        "An upper-bound on the time (in seconds) that the best-path
+         selection is deferred";
+    }
+
+    leaf med-missing-as-worst {
+      type boolean;
+      description
+        "A route without MED is treated as with highest MED value";
+    }
+
+    leaf multipath-as-path-relax {
+      type boolean;
+      default true;
+      description
+        "Paths with different AS-Path but of same length can form 
+         ECMP";
+    }
+
+    leaf multipath-nexthop-relax {
+      type boolean;
+      default false;
+      description
+        "Enable BGP multi-path for paths with same next-hop";
+    }
+  }
+
   augment "/rt-pol:routing-policy/rt-pol:defined-sets" +
           "/bp:bgp-defined-sets" {
     description
       "Augmentation of the Routing Policy module to add
        mobile interface defined sets.";
 
-    container interface-sets {
+    container n4-interface-sets {
       description
-        "Enclosing container for list of interface sets.";
+        "Enclosing container for list of n4 interface sets.";
 
       list interface-set {
         key "name";
@@ -377,22 +548,34 @@ module ietf-srv6-mobile {
           "/rt-pol:policy-definition/rt-pol:statements" +
           "/rt-pol:statement/rt-pol:conditions/bp:bgp-conditions" {
     description
-      "Augmentation of the Routing Policy module to add match
-       conditions.";
+      "Augmentation of the Routing Policy module to add conditions.";
 
-    container match-network-interface-set {
+    container match-n4-network-interface-set {
       description
         "Match a referenced network instance.";
-      leaf interface-set {
+      leaf n4-network-instance-set {
         type leafref {
           path "/rt-pol:routing-policy/rt-pol:defined-sets/"
-             + "bp:bgp-defined-sets/interface-sets/"
+             + "bp:bgp-defined-sets/n4-interface-sets/"
              + "interface-set/name";
         }
         description
           "References a defined community set.";
       }
       uses rt-pol:match-set-options-group;
+    }
+  }
+
+  augment "/rt-pol:routing-policy/rt-pol:policy-definitions" +
+          "/rt-pol:policy-definition/rt-pol:statements" +
+          "/rt-pol:statement/rt-pol:actions/bp:bgp-actions" {
+    description
+      "Augmentation of the Routing Policy module to add actions.";
+
+    container set-network-interface {
+      description
+        "Set a referenced network instance.";
+      uses rt-pol:apply-policy-group;
     }
   }
 }
