@@ -8,11 +8,6 @@ module ietf-srv6-mobile {
     reference
       "RFC 6991: Common YANG Data Types.";
   }
-  import ietf-network-instance {
-    prefix ni;
-    reference
-      "RFC 8529: YANG Data Model for Network Intances.";
-  }
   import ietf-routing {
     prefix rt;
     reference
@@ -65,11 +60,11 @@ module ietf-srv6-mobile {
   }
 
   organization
-    "IETF IDR Working Group";
+    "IETF SPRING Working Group";
 
   contact
-    "WG Web:   <https://datatracker.ietf.org/wg/idr/about>
-     WG List:  <idr@ietf.org>
+    "WG Web:   <https://datatracker.ietf.org/wg/spring/about>
+     WG List:  <spring@ietf.org>
 
      Editor: Mahesh Jethanandani (mjethanandani at gmail dot com)
      Author:  Tetsuya Murakami (tetsuya at arrcus dot com)";
@@ -127,22 +122,13 @@ module ietf-srv6-mobile {
       "draft-ietf-dmm-srv6-mobile-uplane";
   }
 
-  typedef ni-ref {
-    type leafref {
-      path "/ni:network-instances/ni:network-instance/ni:name";
-    }
-    description
-      "This type is used by data models that need to reference a
-       network instance.";
-  }
-
   /*
    * Identities
    */
-  identity srte-policy-ipv6 {
+  identity srv6-mup {
     base bt:afi-safi-type;
     description
-      "Segment Routing Traffic Engineering (AFI,SAFI = ?,?)";
+      "Segment Routing for Mobile User Plane (AFI,SAFI = ?,?)";
     reference
       "RFC XXXX: A YANG Model for BGP configuration in mobile 
        networks.";
@@ -249,9 +235,9 @@ module ietf-srv6-mobile {
       must "not(/rt:routing/rt:control-plane-protocols" +
            "/rt:control-plane-protocol" +
            "/bgp:bgp/bgp:global/srv6/mobile/encapsulation/config" +
-	   "/locator | " +
+           "/locator | " +
            "/rt:routing/rt:control-plane-protocols" +
-	   "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+           "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
            "/srv6/locator)" {
         error-message "SRv6 configurations must be removed first";
       }
@@ -266,17 +252,17 @@ module ietf-srv6-mobile {
       }
       must "not(../label-allocation-mode)" {
         error-message "label-allocation-mode and sid-allocation-mode "
-	            + "cannot co-exist";
+                    + "cannot co-exist";
       }
       must "boolean(/rt:routing/rt:control-plane-protocols" +
            "/rt:control-plane-protocol" +
            "/bgp:bgp/bgp:global/srv6/mobile/encapsulation/locator |" +
            "/rt:routing/rt:control-plane-protocols" +
-	   "/rt:control-plane-protocol/bgp:bgp/bgp:global/srv6" +
-	   "/mobile/decapsulations/decapsulation/locator |" +
-	   "/rt:routing/rt:control-plane-protocols" +
-	   "/rt:control-plane-protocol/bgp:bgp/bgp:global/srv6" +
-	   "/locator)" {
+           "/rt:control-plane-protocol/bgp:bgp/bgp:global/srv6" +
+           "/mobile/decapsulations/decapsulation/locator |" +
+           "/rt:routing/rt:control-plane-protocols" +
+           "/rt:control-plane-protocol/bgp:bgp/bgp:global/srv6" +
+           "/locator)" {
         error-message "SRv6 locator name must be configured";
       }
       description
@@ -319,11 +305,19 @@ module ietf-srv6-mobile {
       }
 
       container mobile {
+        when "derived-from-or-self(/rt:routing" +
+             "/rt:control-plane-protocols" +
+             "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+             "/bgp:afi-safis/bgp:afi-safi/bgp:name, 'srv6-mup')" {
+          description
+            "This augmentation is valid only for a MUP SAFI.";
+        }
+
         description
-	  "Mobile configuration.";
+          "Mobile configuration of SRv6.";
 
         container encapsulation {
-	  description
+          description
             "Encapsulation configuration.";
 
           leaf locator {
@@ -339,35 +333,19 @@ module ietf-srv6-mobile {
             type srv6-mobile-function-type;
             must "boolean(current()/../locator)" {
               error-message
-		"SRv6 Mobile Locator name must be configured";
-            }
-	    description
-	      "One of the SRv6 function types.";
-          }
-
-          leaf network-instance {
-            type ni-ref;
-            must "boolean(current()/../locator)" {
-              error-message "SRv6 Mobile Locator name must be
-                             configured";
+                "SRv6 Mobile Locator name must be configured";
             }
             description
-              "Reference to network-instance";
-          }
-
-          leaf policy-color {
-            type uint32;
-            description
-              "4 byte SRTE Policy Color";
+              "One of the SRv6 function types.";
           }
 
           leaf source-adress {
             type inet:ipv4-address;
-	    description
+            description
               "GTP source IP address";
           }
 
-	  leaf source-position {
+          leaf source-position {
             type uint8;
             description
               "Bit position of GTP source IP address";
@@ -380,14 +358,14 @@ module ietf-srv6-mobile {
             leaf routing-policy {
               type leafref {
                 path "/rt-pol:routing-policy/" +
-		     "rt-pol:policy-definitions/" +
+                     "rt-pol:policy-definitions/" +
                      "rt-pol:policy-definition/rt-pol:name";
               }
               must "boolean(current()/../access)" {
                 error-message
-		  "SRv6 Mobile access instance name must be " +
+                  "SRv6 Mobile access instance name must be " +
                   "configured";
-	      }
+              }
               description
                 "Reference to routing-policy";
             }
@@ -428,26 +406,10 @@ module ietf-srv6-mobile {
               type srv6-mobile-function-type;
               must "boolean(current()/../locator)" {
                 error-message
-		  "SRv6 Mobile Locator name must be configured";
+                  "SRv6 Mobile Locator name must be configured";
               }
               description
                 "One of SRv6 function types.";
-            }
-
-            leaf network-instance {
-              type ni-ref;
-              must "boolean(current()/../locator)" {
-                error-message
-		  "SRv6 Mobile Locator name must be configured";
-              }
-              description
-                "Reference to network-instance";
-            }
-
-            leaf policy-color {
-              type uint32;
-              description
-                "4 byte SRTE Policy Color";
             }
 
             container n4-network-instance {
