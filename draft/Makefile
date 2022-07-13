@@ -24,8 +24,7 @@ next_ver ?=
 else
 next_ver ?= $(shell printf "%.2d" $$((1$(current_ver)-99)))
 endif
-#next := $(draft)-$(next_ver)
-next := $(draft)-00
+next := $(draft)-$(next_ver)
 
 .PHONY: latest submit clean
 
@@ -53,10 +52,10 @@ endif
 	-rm -f ../bin/submodules/*\@$(shell date +%Y)*.yang
 	-rm -f ../bin/submodules/*\@$(shell date +%Y)*-*-*.yang
 
-$(next).xml: $(draft).xml ../src/yang/ietf-srv6-mobile.yang
+$(next).xml: $(draft).xml ../src/yang/ietf-mup.yang
 	-mkdir -p ../bin
 	sed -e"s/$(basename $<)-latest/$(basename $@)/" -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" $< > $@
-	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/ietf-srv6-mobile.yang > ../bin/ietf-srv6-mobile\@$(shell date +%Y-%m-%d).yang
+	sed -e"s/YYYY-MM-DD/$(shell date +%Y-%m-%d)/" ../src/yang/ietf-mup.yang > ../bin/ietf-mup\@$(shell date +%Y-%m-%d).yang
 
 	cd ../src; ./validate-and-gen-trees.sh; cd ..;
 	../src/insert-figures.sh $@ > tmp; mv tmp $@

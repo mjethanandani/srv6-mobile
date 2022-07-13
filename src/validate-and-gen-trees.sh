@@ -36,7 +36,7 @@ rm ../bin/*-tree.txt.tmp
 
 # Generate a sub-tree with a depth of 3
 
-for i in ../bin/ietf-srv6-mobile\@$(date +%Y-%m-%d).yang
+for i in ../bin/ietf-mup\@$(date +%Y-%m-%d).yang
 do
     name=$(echo $i | cut -f 1-3 -d '.')
     echo "Generating abridged tree diagram for $name.yang"
@@ -62,7 +62,7 @@ echo "Validating examples"
 #do
 #    name=$(echo $i | cut -f 1-3 -d '.')
 #    echo "Validating $name.xml"
-#    response=`yanglint -ii -t config -p ../../iana/yang-parameters/ -p ../../iana/yang-parameters/ietf-network-instance@2019-01-21.yang ../../iana/yang-parameters/ietf-bgp@2022-02-04.yang ../bin/ietf-srv6-mobile\@$(date +%Y-%m-%d).yang $name.xml`
+#    response=`yanglint -ii -t config -p ../../iana/yang-parameters/ -p ../../iana/yang-parameters/ietf-network-instance@2019-01-21.yang ../../iana/yang-parameters/ietf-bgp@2022-02-04.yang ../bin/ietf-mup\@$(date +%Y-%m-%d).yang $name.xml`
 #    if [ $? -ne 0 ]; then
 #       printf "failed (error code: $?)\n"
 #       printf "$response\n\n"

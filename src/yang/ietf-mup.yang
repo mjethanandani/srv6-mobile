@@ -1,0 +1,388 @@
+module ietf-mup {
+  yang-version "1.1";
+  namespace "urn:ietf:params:xml:ns:yang:ietf-mup";
+  prefix "srv6-mob";
+
+  import ietf-yang-types {
+    prefix yang;
+    reference
+      "RFC 6991: Common YANG Data Types.";
+  }
+  import ietf-routing {
+    prefix rt;
+    reference
+      "RFC 8349, A YANG Data Model for Routing Management
+       (NMDA Version).";
+  }
+  import ietf-network-instance {
+    prefix ni;
+    reference
+      "RFC 8529: YANG Data Model for Network Instances.";
+  }
+  import ietf-routing-types {
+    prefix rt-types;
+    reference
+      "RFC 8294: Common YANG Data Types for the Routing Area.";
+  }
+  import ietf-bgp {
+    prefix bgp;
+    reference
+      "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
+       Network.";
+  }
+  import ietf-bgp-types {
+    prefix bt;
+    reference
+      "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
+       Network.";
+  }
+
+  organization
+    "IETF BESS Working Group";
+
+  contact
+    "WG Web:   <https://datatracker.ietf.org/wg/bess/about>
+     WG List:  <bess@ietf.org>
+
+     Editor: Mahesh Jethanandani (mjethanandani at gmail dot com)
+     Author:  Tetsuya Murakami (tetsuya at arrcus dot com)";
+
+  description
+    "This module augments the BGP YANG model to add support for
+     configuration in mobile networks.
+
+     Copyright (c) 2022 IETF Trust and the persons identified as
+     authors of the code.  All rights reserved.
+
+     Redistribution and use in source and binary forms, with or
+     without modification, is permitted pursuant to, and subject
+     to the license terms contained in, the Simplified BSD 
+     License set forth in Section 4.c of the IETF Trust's Legal
+     Provisions Relating to IETF Documents
+     (https://trustee.ietf.org/license-info).
+
+     This version of this YANG module is part of RFC XXXX
+     (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+     for full legal notices.
+
+     The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
+     NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT 
+     RECOMMENDED', 'MAY', and 'OPTIONAL' in this document are to
+     be interpreted as described in BCP 14 (RFC 2119) (RFC 8174)
+     when, and only when, they appear in all capitals, as shown
+     here.";
+
+  revision "YYYY-MM-DD" {
+    description
+      "Initial Version.";
+    reference
+      "RFC XXXX, A YANG Model for BGP configuration in mobile 
+       networks.";
+  }
+
+ /*
+  * Features
+  */
+
+  /*
+   * Typedefs
+   */
+
+  /*
+   * Identities
+   */
+  identity bgp-mup {
+    base bt:afi-safi-type;
+    description
+      "Segment Routing for Mobile User Plane (AFI,SAFI = 1 or 2,
+       ?)";
+    reference
+      "RFC XXXX: A YANG Model for BGP configuration in mobile 
+       networks.";
+  }
+
+  identity architecture-type {
+    description
+      "Base identity for Architecture Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  identity three-gpp-5g {
+    base architecture-type;
+    description
+      "The Architecture Type for BGP-MUP NLRI.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  identity route-type {
+    description
+      "Base identity for Route Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  identity interwork-segment-discovery {
+    base route-type;
+    description
+      "The Interwork Segment Discovery Route Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  identity direct-segment-discovery {
+    base route-type;
+    description
+      "The Direct Segment Discovery Route Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  identity type-1-session-transformed {
+    base route-type;
+    description
+      "Type 1 Session Transformed (ST) Route Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  identity type-2-session-transformed {
+    base route-type;
+    description
+      "Type 2 Session Transformed (ST) Route Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
+  
+  /*
+   * Groupings
+   */
+  grouping bgp-mup {
+    description
+      "BGP-MUP NLRI configuration.";
+
+    container mup {
+      when "derived-from-or-self (../../bgp:afi-safi/bgp:name, 
+                                 'bgp-mup')" {
+	description
+	  "Include this container for BGP MUP specific
+           configuration";
+      }
+      description
+        "BGP MUP extensions.";
+
+      leaf architecture-type {
+        type identityref {
+          base architecture-type;
+        }
+        description
+          "Encoding of the rest of BGP-MUP NLRI for a given
+           MUP architecture.";
+      }
+
+      leaf route-type {
+        type identityref {
+          base route-type;
+        }
+        description
+          "Encoding of the rest of BGP-MUP NLRI for a given 
+           architecture type.";
+      }
+    }
+  }
+
+  grouping global-import-export {
+    description
+      "Grouping for import from global routing table";
+
+    container import-from-global {
+      description
+        "Import from global routing table";
+
+      leaf enable {
+        type boolean;
+        description
+          "Enable the import from global routing table.";
+      }
+    }
+
+    container export-to-global {
+      description
+	"Export to global routing table";
+
+      leaf enable {
+        type boolean;
+        description
+	  "Enable the export of routes to global table.";
+      }
+    }
+  }
+
+
+  grouping mup-route-targets {
+    description
+      "A grouping that specifies Route Target import-export rules
+       used in BGP-MUP.";
+
+    list mup-target {
+      key "route-target";
+      description
+        "List of Route Targets.";
+
+      leaf route-target {
+        type rt-types:route-target;
+        description
+          "Route Target value.";
+      }
+
+      leaf route-target-type {
+        type rt-types:route-target-type;
+        mandatory true;
+        description
+          "Import/export type of the Route Target.";
+      }
+    }
+  }
+
+  grouping vrf-parameters {
+    description
+      "VRF specific parameters.";
+
+    leaf rd {
+      type rt-types:route-distinguisher;
+      description
+	"Route distinguisher value.";
+      reference
+	"RFC 4364: BGP/MPLS IP Virtual Private Networks (VPNs).";
+    }
+    uses mup-route-targets;
+    uses global-import-export;
+  }
+
+  /*
+   * VRF specific configuration
+   */
+  augment "/ni:network-instances/ni:network-instance/ni:ni-type" {
+    description
+      "Augment network instance for per VRF MUP parameters";
+    
+    case n3 {
+      container n3 {
+        description
+          "Configuration of N3 VRF type specific parameters";
+
+	uses vrf-parameters;
+      }
+    }
+    
+    case n6 {
+      container n6 {
+        description
+          "Configuration of N6 VRF type specific parameters";
+     
+	uses vrf-parameters;
+      }
+    }
+  }
+
+  /* 
+   * BGP configuration
+   */
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+          "/bgp:afi-safis/bgp:afi-safi" {
+    description
+      "Augmentation of the BGP model to add BGP-MUP.";
+    uses bgp-mup;
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:neighbors" +
+          "/bgp:neighbor/bgp:afi-safis/bgp:afi-safi" {
+    description
+      "Augmentation of the BGP model to add BGP-MUP.";
+    uses bgp-mup;
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:neighbors" +
+          "/bgp:neighbor/bgp:statistics" {
+    description
+      "Augmentation of the BGP per-neighbor statistics to add
+       BGP-MUP specific counters.";
+
+    leaf isd-sent {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Interwork Segment Discovery routes sent
+         per neighbor.";
+    }
+
+    leaf isd-received {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Interwork Segment Discovery routes
+         received per neighbor.";
+    }
+
+    leaf dsd-sent {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Direct Segment Discovery routes sent
+         per neighbor.";
+    }
+
+    leaf dsd-received {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Direct Segment Discovery routes
+         received per neighbor.";
+    }
+
+    leaf type-1-st-sent {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Type 1 Session Transformed routes sent
+         per neighbor.";
+    }
+
+    leaf type-1-st-received {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Type 1 Session Transformed routes
+         received per neighbor.";
+    }
+
+    leaf type-2-st-sent {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Type 2 Session Transformed routes sent
+         per neighbor.";
+    }
+
+    leaf type-2-st-received {
+      type yang:zero-based-counter32;
+      description
+        "Total number of BGP Type 2 Session Transformed routes
+         received per neighbor.";
+    }
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:peer-groups" +
+          "/bgp:peer-group/bgp:afi-safis/bgp:afi-safi" {
+    description
+      "Augmentation of the BGP peer-group to add BGP-MUP.";
+
+    uses bgp-mup;
+  }
+}
