@@ -30,7 +30,7 @@ module ietf-mup {
       "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
        Network.";
   }
-  import ietf-bgp-types {
+  import iana-bgp-types {
     prefix bt;
     reference
       "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 

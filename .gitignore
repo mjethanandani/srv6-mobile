@@ -1,0 +1,8 @@
+# Emacs tmp files
+
+*~
+src/yang/#*#
+
+# Built files
+draft/draft-mahesh-bess-srv6-mup-yang-*.*
+bin/
