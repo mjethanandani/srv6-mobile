@@ -124,7 +124,7 @@ module ietf-mup {
   identity ipv4-mup {
     base bt:afi-safi-type;
     description
-      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 1, ?)";
+      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 1, 85)";
     reference
       "RFC XXXX: A YANG Model for BGP configuration of Mobile
                  User Plane (MUP).";
@@ -133,7 +133,7 @@ module ietf-mup {
   identity ipv6-mup {
     base bt:afi-safi-type;
     description
-      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 2, ?)";
+      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 2, 85)";
     reference
       "RFC XXXX: A YANG Model for BGP configuration of Mobile
                  User Plane (MUP).";
@@ -221,17 +221,17 @@ module ietf-mup {
       }
 
       list route-target {
-	key "route-target route-target-type";
+	key "target type";
 	description
 	  "List of MUP community types.";
 
-	leaf route-target {
+	leaf target {
 	  type rt-types:route-target;
 	  description
 	    "Route Target.";
 	}
 	  
-	leaf route-target-type {
+	leaf type {
 	  type rt-types:route-target-type;
 	  description
 	    "Route Target type.";

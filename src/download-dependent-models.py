@@ -4,6 +4,7 @@ list_of_ietf_models =\
 [ ["ietf-bgp", "draft-ietf-idr-bgp-model", "14"],
   ["ietf-tcp", "draft-ietf-tcpm-yang-tcp", "07"],
   ["ietf-tcp-common", "draft-ietf-netconf-tcp-client-server", "09"],
+  ["ietf-srv6-types", "draft-ietf-spring-srv6-yang", "01"],
   ["ietf-srv6-base", "draft-ietf-spring-srv6-yang", "01"],
   ["iana-bgp-types", "draft-ietf-idr-bgp-model", "14"] ]
 
