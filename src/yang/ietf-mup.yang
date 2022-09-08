@@ -29,6 +29,16 @@ module ietf-mup {
     reference
       "RFC 8294: Common YANG Data Types for the Routing Area.";
   }
+  import ietf-routing-policy {
+    prefix rt-pol;
+    reference
+      "RFC 9067: A YANG Data Model for Routing Policy.";
+  }
+  import ietf-network-instance {
+    prefix ni;
+    reference
+      "RFC 8529: YANG Data Model for Network Instance.";
+  }
   import ietf-bgp {
     prefix bgp;
     reference
@@ -50,7 +60,7 @@ module ietf-mup {
     prefix srv6;
     reference
       "I-D.ietf-spring-srv6-yang: YANG Data Model for SRv6 Base
-				  and Static.";
+                                  and Static.";
   }
 
   organization
@@ -109,9 +119,9 @@ module ietf-mup {
       pattern '(6553[0-5]|655[0-2][0-9]|654[0-9]{2}|65[0-4][0-9]{2}' +
               '|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[0-9]):' +
               '(429496729[0-5]|42949672[0-8][0-9]|4294967[0-1][0-9]' +
-	      '{2}|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8]' +
-	      '[0-9]{5}|429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]' +
-	      '{9}|[1-9][0-9]{1,8}|[0-9])';
+              '{2}|429496[0-6][0-9]{3}|42949[0-5][0-9]{4}|4294[0-8]' +
+              '[0-9]{5}|429[0-3][0-9]{6}|4[0-1][0-9]{7}|[1-3][0-9]' +
+              '{9}|[1-9][0-9]{1,8}|[0-9])';
     }
     description
       "A type definition utilised to define the extended community
@@ -209,82 +219,82 @@ module ietf-mup {
 
     container rt-afi-safi {
       description
-	"Container for route targets associated with this
+        "Container for route targets associated with this
          AFI/SAFI.";
 
       leaf type {
         type identityref {
           base bt:afi-safi-type;
         }
-	description
-	  "Route Target AFI/SAFI type.";
+        description
+          "Route Target AFI/SAFI type.";
       }
 
       list route-target {
-	key "route-target route-target-type";
-	description
-	  "List of MUP community types.";
+        key "route-target route-target-type";
+        description
+          "List of MUP community types.";
 
-	leaf route-target {
-	  type rt-types:route-target;
-	  description
-	    "Route Target.";
-	}
-	  
-	leaf route-target-type {
-	  type rt-types:route-target-type;
-	  description
-	    "Route Target type.";
-	}
+        leaf route-target {
+          type rt-types:route-target;
+          description
+            "Route Target.";
+        }
+          
+        leaf route-target-type {
+          type rt-types:route-target-type;
+          description
+            "Route Target type.";
+        }
       }
     }
 
     list segment {
       key "type";
       description
-	"List of segments.";
+        "List of segments.";
 
       leaf type {
-	type identityref {
-	  base segment-type;
-	}
-	description
-	  "Type of segment.";
+        type identityref {
+          base segment-type;
+        }
+        description
+          "Type of segment.";
       }
 
       leaf locator {
-	type leafref {
-	  path "/rt:routing/sr:segment-routing/srv6:srv6" +
-	       "/srv6:locators/srv6:locator/srv6:name";
-	}
-	must "derived-from-or-self(../type, 'interwork')";
-	description
-	  "Reference to locator in the 'default' VRF configuration.";
+        type leafref {
+          path "/rt:routing/sr:segment-routing/srv6:srv6" +
+               "/srv6:locators/srv6:locator/srv6:name";
+        }
+        must "derived-from-or-self(../type, 'interwork')";
+        description
+          "Reference to locator in the 'default' VRF configuration.";
       }
 
       leaf-list entry {
         type union {
-	  type inet:ip-prefix;
-	  type if:interface-ref;
+          type inet:ip-prefix;
+          type if:interface-ref;
           type enumeration {
-	    enum router-ip {
-	      description
-	        "Entry is of type router-ip.";
-	    }
-	  }
+            enum router-ip {
+              description
+                "Entry is of type router-ip.";
+            }
+          }
         }
-	description
-	  "MUP entries.";
+        description
+          "MUP entries.";
       }
 
       leaf-list mup-ext-comm {
-	type mup-ext-community-type;
-	must "derived-from-or-self(../type, 'direct')";
-	description
-	  "MUP extended community type.";
+        type mup-ext-community-type;
+        must "derived-from-or-self(../type, 'direct')";
+        description
+          "MUP extended community type.";
       }
     }
-	  
+          
     leaf architecture-type {
       type identityref {
         base architecture-type;
@@ -292,6 +302,133 @@ module ietf-mup {
       description
         "Encoding of the rest of BGP-MUP NLRI for a given
          MUP architecture.";
+    }
+  }
+
+  grouping route-filtering {
+    description
+      "Grouping to specify route filtering rules.";
+
+    container rt {
+      description
+        "Set of route-targets to match for import and export routes
+         to/from VRF";
+
+      uses rt-types:vpn-route-targets;
+
+      leaf route-policy {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+               "rt-pol:policy-definition/rt-pol:name";
+          require-instance true;
+        }
+        description
+          "Reference to the route policy containing set of 
+           route-targets.";
+       }
+    }
+
+    container import-from-global {
+      presence "Presence container for import from global.";
+      description
+        "Import from global routing table";
+
+      leaf advertise-as-mup {
+        type boolean;
+        default true;
+        description
+          "Advertise routes imported from global table as MUP routes";
+      }
+
+      leaf route-policy {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+               "rt-pol:policy-definition/rt-pol:name";
+          require-instance true;
+        }
+        description "Route policy as a filter for importing routes.";
+      }
+
+      leaf bgp-valid-route {
+        type boolean;
+        default false;
+        description
+          "Enable all valid routes (including non-best paths) to be
+           candidate for import";
+      }
+
+      leaf protocol {
+        type identityref {
+          base rt:routing-protocol;
+        }
+        description
+          "Specifies the protocol from which routes are imported.";
+      }
+
+      leaf instance {
+        type string;
+        description
+          "Specifies the instance id of the protocol";
+      }
+    }
+
+    leaf export-to-global {
+      type boolean;
+      default false;
+      description
+        "When set to true, export to global is enabled.";
+    }
+
+    container routing-table-limit {
+      description
+        "The routing-table limit command sets a limit on the maximum
+         number of routes that the IPv4 or IPv6 address family of a
+         MUP instance can support.
+
+         By default, there is no limit on the maximum number of
+         routes that the IPv4 or IPv6 address family of a MUP
+         instance can support, but the total number of private
+         network and public network routes on a device cannot
+         exceed the allowed maximum number of unicast routes.";
+
+      leaf number {
+        type uint32 {
+          range "1..max";
+        }
+        description
+          "Specifies the maximum number of routes supported by a
+           MUP instance. ";
+      }
+
+      choice action {
+        description
+          "Choice of actions to take.";
+
+        leaf percent {
+          type rt-types:percentage;
+          description
+            "Specifies the percentage of the maximum number of
+             routes. When the maximum number of routes that join
+             the MUP instance is up to the value (number*percent)/100,
+             the system prompts alarms. The MUP routes can be still
+             added to the routing table, but after the number of
+             routes reaches number, the subsequent routes are
+             dropped.";
+        }
+
+        leaf simple {
+          type boolean;
+          description
+            "Indicates that when MUP routes exceed number, routes
+             can still be added into the routing table, but the
+             system prompts alarms.
+             
+             However, after the total number of VPN routes and
+             network public routes reaches the unicast route limit
+             specified in the License, the subsequent routes
+             are dropped.";
+        }
+      }
     }
   }
 
@@ -307,21 +444,21 @@ module ietf-mup {
     container ipv4-mup {
       when "derived-from-or-self (../../bgp:afi-safi/bgp:name, 
            'ipv4-mup')" {
-	description
-	  "This configuration applies only if the identity is
-	   IPv4 MUP.";
+        description
+          "This configuration applies only if the identity is
+           IPv4 MUP.";
       }
       uses bgp-mup;
       description
-	"IPv4 MUP configuration and management.";
+        "IPv4 MUP configuration and management.";
     }
 
     container ipv6-mup {
       when "derived-from-or-self (../../bgp:afi-safi/bgp:name,
            'ipv6-mup')" {
-	description
-	  "This configuration applies only if the identity is
-	   IPv6 MUP.";
+        description
+          "This configuration applies only if the identity is
+           IPv6 MUP.";
       }
       uses bgp-mup;
       description
@@ -338,22 +475,22 @@ module ietf-mup {
     container ipv4-mup {
       when "derived-from-or-self(../../bgp:afi-safi/bgp:name,         
             'ipv4-mup')" {
-	description
-	  "This configuration applies only if the identity is
-	   IPv4 MUP.";
+        description
+          "This configuration applies only if the identity is
+           IPv4 MUP.";
       }
       presence "Presence container for IPv4 MUP.";
       description
-	"IPv4 MUP configuration and management on a per neighbor
+        "IPv4 MUP configuration and management on a per neighbor
          basis.";
     }
 
     container ipv6-mup {
       when "derived-from-or-self(../../bgp:afi-safi/bgp:name,
             'ipv6-mup')" {
-	description
-	  "This configuration applies only if the identity is
-	   IPv6 MUP.";
+        description
+          "This configuration applies only if the identity is
+           IPv6 MUP.";
       }
       presence "Presence container for IPv6 MUP.";
       description
@@ -433,5 +570,61 @@ module ietf-mup {
       "Augmentation of the BGP peer-group to add BGP-MUP.";
 
     uses bgp-mup;
+  }
+
+  augment "/ni:network-instances/ni:network-instance/ni:ni-type" {
+     description
+       "Augment network instance for per VRF MUP parameters";
+
+     case mup {
+      container mup {
+        description
+          "Configuration of MUP specific parameters";
+
+        container rd {
+	  description
+	    "Route distinguisher parameters.";
+	  
+          leaf rd {
+            type union {
+              type rt-types:route-distinguisher;
+              type enumeration {
+                enum auto {
+		  description
+                    "Route distinguisher is assigned automatically.";
+		}
+              }
+            }
+            description
+              "Route distinguisher value.";
+            reference
+              "RFC 4364: BGP/MPLS IP Virtual Private Networks
+                         (VPNs).";
+          }
+
+          leaf auto-rd {
+            type rt-types:route-distinguisher;
+            config false;
+            description
+              "Automatically assigned RD value when rd is configured
+               as 'auto'.";
+          }
+        }
+      }
+
+      container ipv4 {
+         description
+           "IPv4 specific route filtering rules for import/export.";
+
+         uses route-filtering;
+      }
+
+      container ipv6 {
+         description
+           "IPv6 specific route filtering rules for import/export.";
+
+         uses route-filtering;
+      }
+    }
   }
 }
