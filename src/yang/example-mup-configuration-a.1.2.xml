@@ -1,0 +1,111 @@
+<!--
+    This example shows a MUP configuration.
+-->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"
+ 	    xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">
+  <interface>
+    <name>loopback0</name>
+    <type>ianaift:softwareLoopback</type>
+    <ipv4
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+      <address>
+	<ip>11.11.11.11</ip>
+	<prefix-length>32</prefix-length>
+      </address>
+    </ipv4>
+  </interface>
+  <interface>
+    <name>swp10</name>
+    <type>ianaift:ethernetCsmacd</type>
+    <ipv4
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+      <address>
+	<ip>20.1.1.1</ip>
+	<prefix-length>24</prefix-length>
+      </address>
+    </ipv4>
+  </interface>
+</interfaces>
+
+
+<routing
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
+    xmlns:bt="urn:ietf:params:xml:ns:yang:ietf-bgp-types"
+    xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
+    xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+  <segment-routing
+      xmlns="urn:ietf:params:xml:ns:yang:ietf-segment-routing">
+    <srv6
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+      <locators>
+	<locator>
+	  <name>mup-gw-1</name>
+	  <prefix>
+	    <!-- draft-ietf-spring-srv6-yang defines address
+                 as ip-address instead of ip-prefix, which
+                 would allow this to be specified the following
+                 address as bead:1000::/48.
+	    -->
+	    <address>bead:1000::</address>
+	    <!-- draft-ietf-spring-srv6-yang defines length
+                 to be prefix length, instead of sid allocation
+                 length. Additionally, it puts a constraint of
+                 range as 32..98, which means this value cannot
+                 be 16.
+	    -->
+	    <length>32</length>
+	  </prefix>
+	</locator>
+	<locator>
+	  <name>mup-gw-2</name>
+	  <prefix>
+	    <address>bead:1010::</address>
+	    <length>32</length>
+	  </prefix>
+	</locator>
+      </locators>
+    </srv6>
+  </segment-routing>    
+  <control-plane-protocols>
+    <control-plane-protocol>
+      <type
+	  xmlns:bgp="urn:ietf:params:xml:ns:yang:ietf-bgp">bgp:bgp</type>
+      <name>b1</name>
+      <bgp
+	  xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp">
+        <global>
+	  <as>64496</as>
+	  <identifier>11.11.11.11</identifier>
+	  <!--
+	      draft-ietf-spring-ipv6-yang does not define a
+	      way to reference a srv6 locator from within a
+	      BGP instance.
+
+              Additionally, it does not allow a SID allocation
+              mode for something like 'instance-sid' or
+              'prefix-sid'
+	  -->
+	  <afi-safis>
+	    <afi-safi>
+	      <name
+		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
+	    </afi-safi>
+	  </afi-safis>
+        </global>
+        <neighbors>
+	  <neighbor>
+	    <remote-address>33.33.33.33</remote-address>
+	    <afi-safis>
+	      <afi-safi>
+		<name
+		    xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
+	      </afi-safi>
+	    </afi-safis>
+	  </neighbor>
+	</neighbors>
+      </bgp>
+    </control-plane-protocol>
+  </control-plane-protocols>
+</routing>

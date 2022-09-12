@@ -134,7 +134,7 @@ module ietf-mup {
   identity ipv4-mup {
     base bt:afi-safi-type;
     description
-      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 1, ?)";
+      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 1, 85)";
     reference
       "RFC XXXX: A YANG Model for BGP configuration of Mobile
                  User Plane (MUP).";
@@ -143,7 +143,7 @@ module ietf-mup {
   identity ipv6-mup {
     base bt:afi-safi-type;
     description
-      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 2, ?)";
+      "AFI/SAFI for Mobile User Plane (AFI,SAFI = 2, 85)";
     reference
       "RFC XXXX: A YANG Model for BGP configuration of Mobile
                  User Plane (MUP).";
@@ -217,34 +217,126 @@ module ietf-mup {
     description
       "BGP-MUP NLRI configuration.";
 
-    container rt-afi-safi {
+    container rt {
       description
         "Container for route targets associated with this
          AFI/SAFI.";
 
-      leaf type {
-        type identityref {
-          base bt:afi-safi-type;
+      uses rt-types:vpn-route-targets;
+
+      leaf route-policy {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+               "rt-pol:policy-definition/rt-pol:name";
+          require-instance true;
         }
         description
-          "Route Target AFI/SAFI type.";
+          "Reference to the route policy containing set of 
+           route-targets.";
       }
 
-      list route-target {
-        key "route-target route-target-type";
+      container import-from-global {
+        presence "Presence container for import from global.";
         description
-          "List of MUP community types.";
+          "Import from global routing table";
 
-        leaf route-target {
-          type rt-types:route-target;
+        leaf advertise-as-mup {
+          type boolean;
+          default true;
           description
-            "Route Target.";
+            "Advertise routes imported from global table as MUP
+             routes";
         }
-          
-        leaf route-target-type {
-          type rt-types:route-target-type;
+
+        leaf route-policy {
+          type leafref {
+            path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+                 "rt-pol:policy-definition/rt-pol:name";
+            require-instance true;
+          }
           description
-            "Route Target type.";
+            "Route policy as a filter for importing routes.";
+        }
+
+        leaf bgp-valid-route {
+          type boolean;
+          default false;
+          description
+            "Enable all valid routes (including non-best paths) to be
+             candidate for import";
+        }
+
+        leaf protocol {
+          type identityref {
+            base rt:routing-protocol;
+          }
+          description
+            "Specifies the protocol from which routes are imported.";
+        }
+
+        leaf instance {
+          type string;
+          description
+            "Specifies the instance id of the protocol";
+        }
+      }
+
+      leaf export-to-global {
+        type boolean;
+        default false;
+        description
+          "When set to true, export to global is enabled.";
+      }
+
+      container routing-table-limit {
+        description
+          "The routing-table limit command sets a limit on the maximum
+           number of routes that the IPv4 or IPv6 address family of a
+           MUP instance can support.
+
+           By default, there is no limit on the maximum number of
+           routes that the IPv4 or IPv6 address family of a MUP
+           instance can support, but the total number of private
+           network and public network routes on a device cannot
+           exceed the allowed maximum number of unicast routes.";
+
+        leaf number {
+          type uint32 {
+            range "1..max";
+          }
+          description
+            "Specifies the maximum number of routes supported by a
+             MUP instance. ";
+        }
+
+        choice action {
+          description
+            "Choice of actions to take.";
+
+          leaf percent {
+            type rt-types:percentage;
+            description
+              "Specifies the percentage of the maximum number of
+               routes. When the maximum number of routes that join
+               the MUP instance is up to the value
+               (number*percent)/100, the system prompts alarms.
+               The MUP routes can be still added to the routing
+               table, but after the number of routes reaches number,
+               the subsequent routes are dropped.";
+          }
+
+          leaf simple {
+            type boolean;
+            description
+              "Indicates that when MUP routes exceed number, routes
+               can still be added into the routing table, but the
+               system prompts alarms.
+             
+               However, after the total number of VPN routes and
+               network public routes reaches the unicast route limit
+               specified in the License, the subsequent routes
+               are dropped.";
+          }
         }
       }
     }
@@ -269,7 +361,8 @@ module ietf-mup {
         }
         must "derived-from-or-self(../type, 'interwork')";
         description
-          "Reference to locator in the 'default' VRF configuration.";
+          "Reference to locator in the 'default' VRF
+           configuration.";
       }
 
       leaf-list entry {
@@ -304,134 +397,7 @@ module ietf-mup {
          MUP architecture.";
     }
   }
-
-  grouping route-filtering {
-    description
-      "Grouping to specify route filtering rules.";
-
-    container rt {
-      description
-        "Set of route-targets to match for import and export routes
-         to/from VRF";
-
-      uses rt-types:vpn-route-targets;
-
-      leaf route-policy {
-        type leafref {
-          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
-               "rt-pol:policy-definition/rt-pol:name";
-          require-instance true;
-        }
-        description
-          "Reference to the route policy containing set of 
-           route-targets.";
-       }
-    }
-
-    container import-from-global {
-      presence "Presence container for import from global.";
-      description
-        "Import from global routing table";
-
-      leaf advertise-as-mup {
-        type boolean;
-        default true;
-        description
-          "Advertise routes imported from global table as MUP routes";
-      }
-
-      leaf route-policy {
-        type leafref {
-          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
-               "rt-pol:policy-definition/rt-pol:name";
-          require-instance true;
-        }
-        description "Route policy as a filter for importing routes.";
-      }
-
-      leaf bgp-valid-route {
-        type boolean;
-        default false;
-        description
-          "Enable all valid routes (including non-best paths) to be
-           candidate for import";
-      }
-
-      leaf protocol {
-        type identityref {
-          base rt:routing-protocol;
-        }
-        description
-          "Specifies the protocol from which routes are imported.";
-      }
-
-      leaf instance {
-        type string;
-        description
-          "Specifies the instance id of the protocol";
-      }
-    }
-
-    leaf export-to-global {
-      type boolean;
-      default false;
-      description
-        "When set to true, export to global is enabled.";
-    }
-
-    container routing-table-limit {
-      description
-        "The routing-table limit command sets a limit on the maximum
-         number of routes that the IPv4 or IPv6 address family of a
-         MUP instance can support.
-
-         By default, there is no limit on the maximum number of
-         routes that the IPv4 or IPv6 address family of a MUP
-         instance can support, but the total number of private
-         network and public network routes on a device cannot
-         exceed the allowed maximum number of unicast routes.";
-
-      leaf number {
-        type uint32 {
-          range "1..max";
-        }
-        description
-          "Specifies the maximum number of routes supported by a
-           MUP instance. ";
-      }
-
-      choice action {
-        description
-          "Choice of actions to take.";
-
-        leaf percent {
-          type rt-types:percentage;
-          description
-            "Specifies the percentage of the maximum number of
-             routes. When the maximum number of routes that join
-             the MUP instance is up to the value (number*percent)/100,
-             the system prompts alarms. The MUP routes can be still
-             added to the routing table, but after the number of
-             routes reaches number, the subsequent routes are
-             dropped.";
-        }
-
-        leaf simple {
-          type boolean;
-          description
-            "Indicates that when MUP routes exceed number, routes
-             can still be added into the routing table, but the
-             system prompts alarms.
-             
-             However, after the total number of VPN routes and
-             network public routes reaches the unicast route limit
-             specified in the License, the subsequent routes
-             are dropped.";
-        }
-      }
-    }
-  }
-
+  
   /* 
    * BGP configuration
    */
@@ -572,6 +538,100 @@ module ietf-mup {
     uses bgp-mup;
   }
 
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" {
+    description
+      "Augmentation of the BGP model to add SRv6 mobile
+       configuration.";
+
+    container srv6 {
+      description
+        "Container to define SRv6 MUP configuration.";
+
+      container mobile {
+	description
+	  "MUP configuration.";
+
+        container encapsulation {
+	  description
+	    "Encapsulation configuration for mobile data.";
+
+          container n4-network-instance {
+	    description
+	      "N4 network instance configuration.";
+	    
+            leaf routing-policy {
+              type leafref {
+		path "/rt-pol:routing-policy" +
+		     "/rt-pol:policy-definitions/" +
+                     "rt-pol:policy-definition/rt-pol:name";
+              }
+              must "boolean(current()/../access)" {
+                error-message
+                  "SRv6 Mobile access instance name must be
+                   configured";
+              }
+              description
+                "Reference to routing-policy";
+
+            }
+
+            leaf-list access {
+              type string;
+              description
+                "Access instance";
+            }
+          }
+        }
+
+        container decapsulations {
+          description
+            "Container for all SRv6 mobile decapsulation
+             configurations";
+
+          list decapsulation {
+            key "id";
+
+            description
+              "SRv6 mobile decapsulation config";
+
+            leaf id {
+              type uint16 {
+                range "1..100";
+              }
+              description
+                "SRv6 mobile decapsulation entry id";
+            }
+
+            container n4-network-instance {
+              leaf core {
+                type string;
+                description
+                  "Advertise Type-2 ST route.";
+              }
+              description
+                "n4 network instance.";
+            }
+
+            container mup-ext-communities {
+	      description
+		"MUP extended communities configuration.";
+
+              leaf-list mup-ext-community {
+                type mup-ext-community-type;
+		description
+		  "List of MUP extended communities.";
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /*
+   * Network Instance configuraation.
+   */
   augment "/ni:network-instances/ni:network-instance/ni:ni-type" {
      description
        "Augment network instance for per VRF MUP parameters";
@@ -582,17 +642,17 @@ module ietf-mup {
           "Configuration of MUP specific parameters";
 
         container rd {
-	  description
-	    "Route distinguisher parameters.";
-	  
+          description
+            "Route distinguisher parameters.";
+          
           leaf rd {
             type union {
               type rt-types:route-distinguisher;
               type enumeration {
                 enum auto {
-		  description
+                  description
                     "Route distinguisher is assigned automatically.";
-		}
+                }
               }
             }
             description
@@ -610,20 +670,6 @@ module ietf-mup {
                as 'auto'.";
           }
         }
-      }
-
-      container ipv4 {
-         description
-           "IPv4 specific route filtering rules for import/export.";
-
-         uses route-filtering;
-      }
-
-      container ipv6 {
-         description
-           "IPv6 specific route filtering rules for import/export.";
-
-         uses route-filtering;
       }
     }
   }

@@ -1,0 +1,91 @@
+<!--
+    This example shows a MUP configuration.
+-->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"
+ 	    xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">
+  <interface>
+    <name>loopback0</name>
+    <type>ianaift:softwareLoopback</type>
+    <ipv4
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+      <address>
+	<ip>11.11.11.11</ip>
+	<prefix-length>32</prefix-length>
+      </address>
+    </ipv4>
+  </interface>
+  <interface>
+    <name>swp10</name>
+    <type>ianaift:ethernetCsmacd</type>
+    <ipv4
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+      <address>
+	<ip>20.1.1.1</ip>
+	<prefix-length>24</prefix-length>
+      </address>
+    </ipv4>
+  </interface>
+</interfaces>
+
+<routing
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
+    xmlns:bt="urn:ietf:params:xml:ns:yang:ietf-bgp-types"
+    xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
+    xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+  <control-plane-protocols>
+    <control-plane-protocol>
+      <type
+	  xmlns:bgp="urn:ietf:params:xml:ns:yang:ietf-bgp">bgp:bgp</type>
+      <name>b1</name>
+      <bgp
+	  xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp">
+        <global>
+	  <as>64496</as>
+	  <identifier>11.11.11.11</identifier>
+	  <!--
+	      draft-ietf-spring-ipv6-yang does not define a
+	      way to reference a srv6 locator from within a
+	      BGP instance.
+
+              Additionally, it does not allow a SID allocation
+              mode for something like 'instance-sid' or
+              'prefix-sid'
+
+              Cannot configure RD in IETF models as RD is configured
+              at a NI level, and configuring anything at the NI level
+              requires support of schema mount which most tools do not
+              support.
+	  -->
+	  <afi-safis>
+	    <afi-safi>
+	      <name
+		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
+	      <ipv4-mup
+		  xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+		<rt>
+		  <vpn-target>
+		    <route-target>100:5000</route-target>
+		    <route-target-type>both</route-target-type>
+		  </vpn-target>
+		</rt>
+		<segment>
+		  <type>direct</type>
+		  <!--
+                      Cannot support locator as that requires
+                      support for NI and Schema Mount, which most
+                      of the tools do not support.
+                  -->
+		  <entry>router-ip</entry>
+		  <mup-ext-comm>100:100</mup-ext-comm>
+		  <mup-ext-comm>200:200</mup-ext-comm>
+		</segment>
+	      </ipv4-mup>
+	    </afi-safi>
+	  </afi-safis>
+        </global>
+      </bgp>
+    </control-plane-protocol>
+  </control-plane-protocols>
+</routing>

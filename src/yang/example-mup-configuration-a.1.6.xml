@@ -1,0 +1,83 @@
+<!--
+    This example shows a MUP configuration for the controller
+    for the VRF of n3_1.
+-->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"
+ 	    xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">
+  <interface>
+    <name>loopback0</name>
+    <type>ianaift:softwareLoopback</type>
+    <ipv4
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
+      <address>
+	<ip>11.11.11.11</ip>
+	<prefix-length>32</prefix-length>
+      </address>
+    </ipv4>
+  </interface>
+</interfaces>
+
+<routing
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
+    xmlns:bt="urn:ietf:params:xml:ns:yang:ietf-bgp-types"
+    xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
+    xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+  <control-plane-protocols>
+    <control-plane-protocol>
+      <type
+	  xmlns:bgp="urn:ietf:params:xml:ns:yang:ietf-bgp">bgp:bgp</type>
+      <name>b1</name>
+      <bgp
+	  xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp">
+        <global>
+	  <as>64496</as>
+	  <identifier>33.33.33.33</identifier>
+	  <afi-safis>
+	    <afi-safi>
+	      <name
+		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
+	      <ipv4-mup
+		  xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+		<rt>
+		  <vpn-target>
+		    <route-target>100:6000</route-target>
+		    <route-target-type>export</route-target-type>
+		  </vpn-target>
+		</rt>
+	      </ipv4-mup>
+	    </afi-safi>
+	  </afi-safis>
+	  <srv6
+	      xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+	    <mobile>
+	      <decapsulations>
+		<decapsulation>
+		  <id>1</id>
+		  <n4-network-instance>
+		    <core>dnn.keysight1.com</core>
+		  </n4-network-instance>
+		  <mup-ext-communities>
+		    <mup-ext-community>100:100</mup-ext-community>
+		    <mup-ext-community>200:200</mup-ext-community>
+		  </mup-ext-communities>
+		</decapsulation>
+		<decapsulation>
+		  <id>2</id>
+		  <n4-network-instance>
+		    <core>dnn.keysight20.com</core>
+		  </n4-network-instance>
+		  <mup-ext-communities>
+		    <mup-ext-community>100:1020</mup-ext-community>
+		    <mup-ext-community>200:2020</mup-ext-community>
+		  </mup-ext-communities>
+		</decapsulation>
+	      </decapsulations>
+	    </mobile>
+	  </srv6>
+        </global>
+      </bgp>
+    </control-plane-protocol>
+  </control-plane-protocols>
+</routing>
