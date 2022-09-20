@@ -26,7 +26,7 @@
   version="3">
 
   <front>
-    <title abbrev="SRv6 MUP YANG Model">A YANG Model for SRv6 Mobile User Plane</title>
+    <title abbrev="SRv6 MUP YANG Model">A YANG Data Model for SRv6 Mobile User Plane</title>
     <seriesInfo name="Internet-Draft" value="draft-mahesh-bess-srv6-mup-yang-latest"/>
    
     <author fullname="Mahesh Jethanandani" initials="M." role="editor" surname="Jethanandani">
