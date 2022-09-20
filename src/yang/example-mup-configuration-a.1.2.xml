@@ -4,7 +4,8 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
 <interfaces xmlns="urn:ietf:params:xml:ns:yang:ietf-interfaces"
- 	    xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">
+            xmlns:ipv4="urn:ietf:params:xml:ns:yang:ietf-ip"
+	    xmlns:ianaift="urn:ietf:params:xml:ns:yang:iana-if-type">
   <interface>
     <name>loopback0</name>
     <type>ianaift:softwareLoopback</type>
@@ -76,12 +77,14 @@
       <bgp
 	  xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp">
         <global>
-	  <as>64496</as>
+          <as>64496</as>
 	  <identifier>11.11.11.11</identifier>
-	  <!--
-	      draft-ietf-spring-ipv6-yang does not define a
-	      way to reference a srv6 locator from within a
-	      BGP instance.
+	  <!-- draft-ietf-idr-bgp-yang does not define
+               route-distinguisher at a global level.
+
+	       draft-ietf-sprint-ipv6-yang does not define a
+               way to reference a srv6 locator from within a
+               BGP instance.
 
               Additionally, it does not allow a SID allocation
               mode for something like 'instance-sid' or

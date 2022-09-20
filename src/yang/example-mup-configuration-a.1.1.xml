@@ -1,15 +1,11 @@
 <!--
     This example shows a MUP configuration.
-
-    draft-ietf-spring-srv6-yang draft defines srv6 locators
-    under /routing/segment-routing/srv6 path, instead of 
-    putting them under BGP.
 -->
 
 <?xml version="1.0" encoding="UTF-8"?>
 <routing
   xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
-  xmlns:bt="urn:ietf:params:xml:ns:yang:ietf-bgp-types"
+  xmlns:bt="urn:ietf:params:xml:ns:yang:iana-bgp-types"
   xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
   xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
   <segment-routing
