@@ -59,6 +59,21 @@
         <uri/>
       </address>
     </author>
+    <author fullname="Kalyani Rajaram" initials="K." surname="Rajaram">
+      <organization>Arrcus, Inc</organization>
+      <address>
+        <postal>
+          <street/>
+          <city/>
+          <region/>
+          <code/>
+          <country/>
+        </postal>
+        <phone/>
+        <email>kalyanir@arrcus.com</email>
+        <uri/>
+      </address>
+    </author>
    
     <date/>
     <area>Routing</area>
@@ -159,10 +174,14 @@
           </thead>
           <tbody>
             <tr><td>MUP</td><td>Mobile User Plane</td></tr>
+	    <tr><td>RD</td><td>Route Distinguisher</td></tr>
+	    <tr><td>RT</td><td>Route Target</td></tr>
 	    <tr><td>SAFI</td><td>Subsequent Address Family
 	    Indicator</td></tr>
             <tr><td>SR</td><td>Segment Routing</td></tr>
             <tr><td>SRv6</td><td>Segment Routing over v6</td></tr>
+            <tr><td>VRF</td><td>Virtual Routing and
+            Forwarding</td></tr>
           </tbody>
 	</table>
       </section>
@@ -184,17 +203,24 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD-sub-tree.txt)
     </section>
     <section>
       <name>YANG Model</name>
-      <t>The YANG model is divided into two parts. The first part of
+      <t>The YANG model is divided into two parts. The second part of
       the model augments the Network Instance YANG model in <xref
-      target="RFC8529">YANG Data Model for Network Instances</xref>,
-      while the second part augments the BGP model in <xref
-      target="I-D.ietf-idr-bgp-model"> BGP Model for Service Provider
-      Network</xref> for the BGP configuration.</t>
+      target="RFC8529">YANG Data Model for Network Instances</xref> to
+      add in configuration related to MUP at a VRF level, e.g., Route
+      Distinguisher (RD).  The first and the main part augments the
+      BGP model <xref target="I-D.ietf-idr-bgp-model"> BGP Model for
+      Service Provider Network</xref> in several areas to add MUP
+      configuration for BGP.</t>
 
-      <t>This model defines a new SAFI called 'bgp-mup'. The BGP model
-      is augmented at a global, neighbor, and peer-group level to add
-      MUP configuration. The Network Instance model is augemented to
-      add VRF specific configuration for the MUP segments.</t>
+      <t>To begin with, this model defines a new SAFI called
+      'bgp-mup'. That new AFI/SAFI is then added to the BGP model by
+      augmenting at a global, and neighbor level to add MUP
+      configuration. That configuration includes support for MUP
+      segment configuration, Route Target (RT), and route management
+      including import from global, export to global and routing table
+      limits. In addition, the BGP model is augmented at a global
+      level to add support for MUP configuration for encapsulation and
+      decapsulation.</t>
       
       <t>The model imports <xref target="RFC6991">Common YANG Data
       Types </xref>, <xref target="RFC8349">A YANG Data Model for
@@ -346,6 +372,45 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD-tree.txt)
       </figure>
     </section>
 
+    <section>
+      <name>Example MUP configurations</name>
+      <t>This section documents some example configurations for MUP.</t>
+
+      <section>
+	<name>Example MUP configuration at a global and
+	neighbor level.</name>
+	<figure>
+	  <name>Example MUP configuration in BGP for global and
+	  neighbor</name>
+          <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.1.xml)
+
+]]></artwork>
+	</figure>
+      </section>
+
+      <section>
+	<name>Example MUP configuration of SRv6.</name>
+	<figure>
+	  <name>Example MUP configuration in BGP for SRv6</name>
+          <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.2.xml)
+
+]]></artwork>
+	</figure>
+      </section>
+
+      <section>
+	<name>Example MUP configuration for RT.</name>
+	<figure>
+	  <name>Example MUP configuration in BGP for RT</name>
+          <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.3.xml)
+
+]]></artwork>
+	</figure>
+      </section>
+    </section>
     <section anchor="Acknowledgements" numbered="false">
       <name>Acknowledgements</name>
       <t>TBA</t>

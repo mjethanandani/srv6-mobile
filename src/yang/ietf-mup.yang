@@ -530,15 +530,6 @@ module ietf-mup {
   }
 
   augment "/rt:routing/rt:control-plane-protocols" +
-          "/rt:control-plane-protocol/bgp:bgp/bgp:peer-groups" +
-          "/bgp:peer-group/bgp:afi-safis/bgp:afi-safi" {
-    description
-      "Augmentation of the BGP peer-group to add BGP-MUP.";
-
-    uses bgp-mup;
-  }
-
-  augment "/rt:routing/rt:control-plane-protocols" +
           "/rt:control-plane-protocol/bgp:bgp/bgp:global" {
     description
       "Augmentation of the BGP model to add SRv6 mobile

@@ -1,7 +1,7 @@
 <!--
     This example shows a MUP configuration.
 
-    draft-ietf-spring-srv6-yang draft defines srv6 locators
+    draft-ietf-spring-srv6-yang defines srv6 locators
     under /routing/segment-routing/srv6 path, instead of 
     putting them under BGP.
 -->
