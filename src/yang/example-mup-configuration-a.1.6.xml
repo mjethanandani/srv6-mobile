@@ -12,7 +12,7 @@
     <ipv4
 	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
       <address>
-	<ip>11.11.11.11</ip>
+	<ip>33.33.33.33</ip>
 	<prefix-length>32</prefix-length>
       </address>
     </ipv4>

@@ -34,6 +34,38 @@
     xmlns:bt="urn:ietf:params:xml:ns:yang:ietf-bgp-types"
     xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
     xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+  <segment-routing
+      xmlns="urn:ietf:params:xml:ns:yang:ietf-segment-routing">
+    <srv6
+	xmlns="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+      <locators>
+	<locator>
+	  <name>mup-gw-1</name>
+	  <prefix>
+	    <!-- draft-ietf-spring-srv6-yang defines address
+                 as ip-address instead of ip-prefix, which
+                 would allow this to be specified the following
+                 address as bead:1000::/48.
+	    -->
+	    <address>bead:1000::</address>
+	    <length>32</length>
+	  </prefix>
+	</locator>
+	<locator>
+	  <name>mup-gw-2</name>
+	  <prefix>
+	    <!-- draft-ietf-spring-srv6-yang defines address
+                 as ip-address instead of ip-prefix, which
+                 would allow this to be specified the following
+                 address as bead:1000::/48.
+	    -->
+	    <address>bead:1010::</address>
+	    <length>32</length>
+	  </prefix>
+	</locator>
+      </locators>
+    </srv6>
+  </segment-routing>
   <control-plane-protocols>
     <control-plane-protocol>
       <type
@@ -49,15 +81,16 @@
 	      way to reference a srv6 locator from within a
 	      BGP instance.
 
-              Additionally, it does not allow a SID allocation
-              mode for something like 'instance-sid' or
-              'prefix-sid'
-
               Cannot configure RD in IETF models as RD is configured
               at a NI level, and configuring anything at the NI level
               requires support of schema mount which most tools do not
               support.
 	  -->
+	  <srv6
+	      xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+	    <locator>mup-gw-1</locator>
+	    <sid-allocation-mode>instance-sid</sid-allocation-mode>
+	  </srv6>
 	  <afi-safis>
 	    <afi-safi>
 	      <name
@@ -76,11 +109,7 @@
 		</rt>
 		<segment>
 		  <type>interwork</type>
-		  <!--
-                      Cannot support locator as that requires
-                      support for NI and Schema Mount, which most
-                      of the tools do not support.
-                  -->
+		  <locator>mup-gw-2</locator>
 		  <entry>swp10</entry>
 		</segment>
 	      </ipv4-mup>

@@ -16,7 +16,7 @@ module ietf-mup {
   import ietf-interfaces {
     prefix if;
     reference
-      "RFCXXXX: YANG Data Model for Interface Management.";
+      "RFC 8343: YANG Data Model for Interface Management.";
   }
   import ietf-routing {
     prefix rt;
@@ -107,8 +107,49 @@ module ietf-mup {
   }
 
  /*
-  * Features
+  * Identities
   */
+  identity sid-allocation-mode {
+    description
+      "Base identity to be used to express types of SRv6 segment ID
+       allocation strategies.";
+  }
+
+  identity sid-per-nexthop {
+    base sid-allocation-mode;
+    description
+      "A segment ID is allocated per nexthop entry in the RIB.";
+  }
+
+  identity instance-sid {
+    base sid-allocation-mode;
+    description
+      "A single segment ID is used.";
+  }
+
+  identity label-allocation-mode {
+    description
+      "Base identity to be used to express types of label allocation
+       strategies.";
+  }
+
+  identity per-prefix {
+    base label-allocation-mode;
+    description
+      "A label is to be allocated per prefix entry in the RIB.";
+  }
+
+  identity per-nexthop {
+    base label-allocation-mode;
+    description
+      "A label is to be allocated per nexthop entry in the RIB.";
+  }
+
+  identity instance-label {
+    base label-allocation-mode;
+    description
+      "A single label is to be used for the instance.";
+  }
 
   /*
    * Typedefs
@@ -169,7 +210,7 @@ module ietf-mup {
   identity segment-type {
     description
       "Base identity for Segment Type.";
-    reference
+   reference
       "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
                                User Plane (MUP) SAFI.";
   }
@@ -213,9 +254,9 @@ module ietf-mup {
   /*
    * Groupings
    */
-  grouping bgp-mup {
+  grouping rt {
     description
-      "BGP-MUP NLRI configuration.";
+      "Grouping for RT configuration.";
 
     container rt {
       description
@@ -234,109 +275,116 @@ module ietf-mup {
           "Reference to the route policy containing set of 
            route-targets.";
       }
+    }
+  }
 
-      container import-from-global {
-        presence "Presence container for import from global.";
+  grouping bgp-mup {
+    description
+      "BGP-MUP NLRI configuration.";
+
+    uses rt;
+
+    container import-from-global {
+      presence "Presence container for import from global.";
+      description
+        "Import from global routing table";
+
+      leaf advertise-as-mup {
+        type boolean;
+        default true;
         description
-          "Import from global routing table";
-
-        leaf advertise-as-mup {
-          type boolean;
-          default true;
-          description
-            "Advertise routes imported from global table as MUP
-             routes";
-        }
-
-        leaf route-policy {
-          type leafref {
-            path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
-                 "rt-pol:policy-definition/rt-pol:name";
-            require-instance true;
-          }
-          description
-            "Route policy as a filter for importing routes.";
-        }
-
-        leaf bgp-valid-route {
-          type boolean;
-          default false;
-          description
-            "Enable all valid routes (including non-best paths) to be
-             candidate for import";
-        }
-
-        leaf protocol {
-          type identityref {
-            base rt:routing-protocol;
-          }
-          description
-            "Specifies the protocol from which routes are imported.";
-        }
-
-        leaf instance {
-          type string;
-          description
-            "Specifies the instance id of the protocol";
-        }
+          "Advertise routes imported from global table as MUP
+           routes";
       }
 
-      leaf export-to-global {
+      leaf route-policy {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+               "rt-pol:policy-definition/rt-pol:name";
+          require-instance true;
+        }
+        description
+          "Route policy as a filter for importing routes.";
+      }
+
+      leaf bgp-valid-route {
         type boolean;
         default false;
         description
-          "When set to true, export to global is enabled.";
+          "Enable all valid routes (including non-best paths) to be
+           candidate for import";
       }
 
-      container routing-table-limit {
+      leaf protocol {
+        type identityref {
+          base rt:routing-protocol;
+        }
         description
-          "The routing-table limit command sets a limit on the maximum
-           number of routes that the IPv4 or IPv6 address family of a
-           MUP instance can support.
+          "Specifies the protocol from which routes are imported.";
+      }
 
-           By default, there is no limit on the maximum number of
-           routes that the IPv4 or IPv6 address family of a MUP
-           instance can support, but the total number of private
-           network and public network routes on a device cannot
-           exceed the allowed maximum number of unicast routes.";
+      leaf instance {
+        type string;
+        description
+          "Specifies the instance id of the protocol";
+      }
+    }
 
-        leaf number {
-          type uint32 {
-            range "1..max";
-          }
+    leaf export-to-global {
+      type boolean;
+      default false;
+      description
+        "When set to true, export to global is enabled.";
+    }
+
+    container routing-table-limit {
+      description
+        "The routing-table limit command sets a limit on the maximum
+         number of routes that the IPv4 or IPv6 address family of a
+         MUP instance can support.
+
+         By default, there is no limit on the maximum number of
+         routes that the IPv4 or IPv6 address family of a MUP
+         instance can support, but the total number of private
+         network and public network routes on a device cannot
+         exceed the allowed maximum number of unicast routes.";
+
+      leaf number {
+        type uint32 {
+          range "1..max";
+        }
+        description
+          "Specifies the maximum number of routes supported by a
+           MUP instance. ";
+      }
+
+      choice action {
+        description
+          "Choice of actions to take.";
+
+        leaf percent {
+          type rt-types:percentage;
           description
-            "Specifies the maximum number of routes supported by a
-             MUP instance. ";
+            "Specifies the percentage of the maximum number of
+             routes. When the maximum number of routes that join
+             the MUP instance is up to the value
+             (number*percent)/100, the system prompts alarms.
+             The MUP routes can be still added to the routing
+             table, but after the number of routes reaches number,
+             the subsequent routes are dropped.";
         }
 
-        choice action {
+        leaf simple {
+          type boolean;
           description
-            "Choice of actions to take.";
-
-          leaf percent {
-            type rt-types:percentage;
-            description
-              "Specifies the percentage of the maximum number of
-               routes. When the maximum number of routes that join
-               the MUP instance is up to the value
-               (number*percent)/100, the system prompts alarms.
-               The MUP routes can be still added to the routing
-               table, but after the number of routes reaches number,
-               the subsequent routes are dropped.";
-          }
-
-          leaf simple {
-            type boolean;
-            description
-              "Indicates that when MUP routes exceed number, routes
-               can still be added into the routing table, but the
-               system prompts alarms.
+            "Indicates that when MUP routes exceed number, routes
+             can still be added into the routing table, but the
+             system prompts alarms.
              
-               However, after the total number of VPN routes and
-               network public routes reaches the unicast route limit
-               specified in the License, the subsequent routes
-               are dropped.";
-          }
+             However, after the total number of VPN routes and
+             network public routes reaches the unicast route limit
+             specified in the License, the subsequent routes
+             are dropped.";
         }
       }
     }
@@ -430,6 +478,44 @@ module ietf-mup {
       description
         "IPv6 MUP configuration and management.";
     }
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+          "/bgp:afi-safis/bgp:afi-safi/bgp:ipv4-unicast" {
+    description
+      "Augmentation of the BGP model to add RT for ipv4-unicast.";
+
+    uses rt;
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+          "/bgp:afi-safis/bgp:afi-safi/bgp:ipv6-unicast" {
+    description
+      "Augmentation of the BGP model to add RT for ipv6-unicast.";
+
+    uses rt;
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+          "/bgp:afi-safis/bgp:afi-safi/bgp:l3vpn-ipv4-unicast" {
+    description
+      "Augmentation of the BGP model to add RT for
+       l3vpn-ipv4-unicast.";
+
+    uses rt;
+  }
+
+  augment "/rt:routing/rt:control-plane-protocols" +
+          "/rt:control-plane-protocol/bgp:bgp/bgp:global" +
+          "/bgp:afi-safis/bgp:afi-safi/bgp:l3vpn-ipv6-unicast" {
+    description
+      "Augmentation of the BGP model to add RT for
+       l3vpn-ipv6-unicast.";
+
+    uses rt;
   }
 
   augment "/rt:routing/rt:control-plane-protocols" +
@@ -539,22 +625,99 @@ module ietf-mup {
       description
         "Container to define SRv6 MUP configuration.";
 
+      leaf locator {
+        type leafref {
+          path "/rt:routing/sr:segment-routing/srv6:srv6" +
+               "/srv6:locators/srv6:locator/srv6:name";
+        }
+        description
+         "Reference to the locator configured.";
+      }
+
+      leaf sid-manager-connected {
+        type boolean;
+        config false;
+        description
+          "Is the connection with segment ID manager active?";
+      }
+
+      leaf locator-registered {
+        type boolean;
+        config false;
+        description
+          "Is the locator name registered?";
+      }
+
+      leaf micro-segment-enabled {
+        type boolean;
+        config false;
+        description
+          "Is the locator enabled for micro-segment behavior?";
+      }
+
+      leaf label-allocation-mode {
+        type identityref {
+          base label-allocation-mode;
+        }
+        must "not(../sid-allocation-mode)" {
+        error-message
+          "label-allocation-mode and sid-allocation-mode cannot "+
+          "co-exist";
+        }
+        must "not((../mobile/encapsulation/locator) or " +
+             "(../locator))" {
+          error-message
+            "SRv6 configurations must be removed first.";
+        }
+        description
+          "The label-allocation-mode to be used for L3 entries
+           in the network instance";
+      }
+
+      leaf sid-allocation-mode {
+        type identityref {
+          base sid-allocation-mode;
+        }
+        must "not(../label-allocation-mode)" {
+          error-message
+            "label-allocation-mode and sid-allocation-mode cannot " +
+            "co-exist";
+        }
+        must "boolean((../mobile/encapsulation/locator) or " +
+             "(../mobile/decapsulations/decapsulation/locator) or " +
+             "(../locator))" {
+          error-message
+            "SRv6 locator name must be configured";
+        }
+        description
+          "The segment ID allocation mode to be used for L3 entries
+           in the network instance";
+      }
+
       container mobile {
-	description
-	  "MUP configuration.";
+        description
+          "MUP configuration.";
 
         container encapsulation {
-	  description
-	    "Encapsulation configuration for mobile data.";
+          description
+            "Encapsulation configuration for mobile data.";
+
+          leaf locator {
+            type leafref {
+              path "../../../locator";
+            }
+            description
+              "Encapsulation specific locator.";
+          }
 
           container n4-network-instance {
-	    description
-	      "N4 network instance configuration.";
-	    
+            description
+              "N4 network instance configuration.";
+
             leaf routing-policy {
               type leafref {
-		path "/rt-pol:routing-policy" +
-		     "/rt-pol:policy-definitions/" +
+                path "/rt-pol:routing-policy" +
+                     "/rt-pol:policy-definitions/" +
                      "rt-pol:policy-definition/rt-pol:name";
               }
               must "boolean(current()/../access)" {
@@ -594,6 +757,14 @@ module ietf-mup {
                 "SRv6 mobile decapsulation entry id";
             }
 
+            leaf locator {
+              type leafref {
+                path "../../../../locator";
+              }
+              description
+                "Encapsulation specific locator.";
+            }
+
             container n4-network-instance {
               leaf core {
                 type string;
@@ -605,13 +776,13 @@ module ietf-mup {
             }
 
             container mup-ext-communities {
-	      description
-		"MUP extended communities configuration.";
+              description
+                "MUP extended communities configuration.";
 
               leaf-list mup-ext-community {
                 type mup-ext-community-type;
-		description
-		  "List of MUP extended communities.";
+                description
+                  "List of MUP extended communities.";
               }
             }
           }

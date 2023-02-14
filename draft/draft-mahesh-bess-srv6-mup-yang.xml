@@ -26,7 +26,7 @@
   version="3">
 
   <front>
-    <title abbrev="SRv6 MUP YANG Model">A YANG Model for SRv6 Mobile User Plane</title>
+    <title abbrev="SRv6 MUP YANG Model">A YANG Data Model for SRv6 Mobile User Plane</title>
     <seriesInfo name="Internet-Draft" value="draft-mahesh-bess-srv6-mup-yang-latest"/>
    
     <author fullname="Mahesh Jethanandani" initials="M." role="editor" surname="Jethanandani">
@@ -203,35 +203,39 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD-sub-tree.txt)
     </section>
     <section>
       <name>YANG Model</name>
-      <t>The YANG model is divided into two parts. The second part of
-      the model augments the Network Instance YANG model in <xref
+      <t>The YANG model is divided into two parts. The first and the
+      main part of the model augments the BGP model in <xref
+      target="I-D.ietf-idr-bgp-model"> YANG Model for Border Gateway
+      Protocol (BGP-4)</xref> for the BGP configuration, while the
+      second part augments the Network Instance YANG model in <xref
       target="RFC8529">YANG Data Model for Network Instances</xref> to
       add in configuration related to MUP at a VRF level, e.g., Route
-      Distinguisher (RD).  The first and the main part augments the
-      BGP model <xref target="I-D.ietf-idr-bgp-model"> BGP Model for
-      Service Provider Network</xref> in several areas to add MUP
-      configuration for BGP.</t>
+      Distinguisher (RD).
+      </t>
 
-      <t>To begin with, this model defines a new SAFI called
-      'bgp-mup'. That new AFI/SAFI is then added to the BGP model by
-      augmenting at a global, and neighbor level to add MUP
-      configuration. That configuration includes support for MUP
-      segment configuration, Route Target (RT), and route management
-      including import from global, export to global and routing table
-      limits. In addition, the BGP model is augmented at a global
-      level to add support for MUP configuration for encapsulation and
-      decapsulation.</t>
+      <t>This model defines two new SAFIs called 'ipv4-mup' and
+      'ipv6-mup'. The BGP model is augmented at a global, and at a
+      neighbor level to add MUP configuration. In addition, containers
+      for AFI/SAFI of type 'ipv4-unicast', 'ipv6-unicast',
+      'l3vpn-ipv4-unicast', and 'l3vpn-ipv6-unicast' are augmented to
+      add Route Targets (RT). Finally, the Network Instance model is
+      augmented to add VRF specific configuration for the MUP
+      segments.</t>
       
       <t>The model imports <xref target="RFC6991">Common YANG Data
-      Types </xref>, <xref target="RFC8349">A YANG Data Model for
-      Routing Management(NMDA Version)</xref>, <xref
-      target="RFC8529">YANG Data Model for Network Instances</xref>,
-      <xref target="RFC9067">A YANG Data Model for Routing
-      Policy</xref>, <xref target="RFC9020">YANG Data Model for
-      Segment Routing</xref>, <xref
+      Types </xref>, <xref target="RFC8294">Common YANG Data Types for
+      the Routing Area</xref>, <xref target="RFC8343">A YANG Data
+      Model for Interface Management</xref>, <xref target="RFC8349">A
+      YANG Data Model for Routing Management(NMDA Version)</xref>,
+      <xref target="RFC8529">YANG Data Model for Network
+      Instances</xref>, <xref target="RFC9067">A YANG Data Model for
+      Routing Policy</xref>, <xref target="RFC9020">YANG Data Model
+      for Segment Routing</xref>, <xref target="RFC9067">A YANG Data
+      Model for Routing Policy</xref>, <xref
       target="I-D.ietf-spring-srv6-yang">YANG Data Model for SRv6 Base
       and Static</xref>, and <xref target="I-D.ietf-idr-bgp-model">BGP
-      Model for Service Provider Network</xref>.</t>
+      Model for Service Provider Network</xref>.
+      </t>
       
       <figure>
         <name>YANG Model for Mobile User Plane</name>
@@ -339,9 +343,11 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD.yang)
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7950.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8040.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8294.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8340.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8341.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8342.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8343.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8349.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8402.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8446.xml"/>
@@ -360,7 +366,7 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD.yang)
     </references>
     
     <section>
-      <name>Appendix 1 Complete Tree Diagram</name>
+      <name>Complete Tree Diagram</name>
       <t>Here is a complete tree diagram for the configuration and
       operational part of the model.</t>
       <figure>
@@ -373,22 +379,18 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD-tree.txt)
     </section>
 
     <section>
-      <name>Example MUP configurations</name>
+      <name>Configuration examples</name>
       <t>This section documents some example configurations for MUP.</t>
-
       <section>
-	<name>Example MUP configuration at a global and
-	neighbor level.</name>
+	<name>MUP configuration under BGP</name>
 	<figure>
-	  <name>Example MUP configuration in BGP for global and
-	  neighbor</name>
+	  <name>MUP configuration under BGP</name>
           <artwork><![CDATA[
 INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.1.xml)
 
 ]]></artwork>
 	</figure>
       </section>
-
       <section>
 	<name>Example MUP configuration of SRv6.</name>
 	<figure>

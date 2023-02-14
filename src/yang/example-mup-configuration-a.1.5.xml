@@ -11,7 +11,7 @@
     <ipv4
 	xmlns="urn:ietf:params:xml:ns:yang:ietf-ip">
       <address>
-	<ip>11.11.11.11</ip>
+	<ip>33.33.33.33</ip>
 	<prefix-length>32</prefix-length>
       </address>
     </ipv4>
@@ -20,7 +20,7 @@
 
 <routing
     xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
-    xmlns:bt="urn:ietf:params:xml:ns:yang:ietf-bgp-types"
+    xmlns:bt="urn:ietf:params:xml:ns:yang:iana-bgp-types"
     xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
     xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
   <control-plane-protocols>
@@ -37,10 +37,6 @@
 	      draft-ietf-spring-ipv6-yang does not define a
 	      way to reference a srv6 locator from within a
 	      BGP instance.
-
-              Additionally, it does not allow a SID allocation
-              mode for something like 'instance-sid' or
-              'prefix-sid'
 
               Cannot configure RD in IETF models as RD is configured
               at a NI level, and configuring anything at the NI level

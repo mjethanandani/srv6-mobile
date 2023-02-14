@@ -10,13 +10,13 @@ and look for the latest version of the tag.
 
 If the repository does not have all the latest tags uploaded, one can create a local tag by using the following command
 
-`git tag draft-ietf-tcpm-yang-tcp-<version>`
+`git tag draft-mahesh-bess-srv6-mup-yang-<version>`
 
 where the `version` field is the current published version of the draft. For example, if the current published version is -12, then the tag created should be:
 
-`git tag draft-ietf-tcpm-yang-tcp-06`
+`git tag draft-mahesh-bess-srv6-mup-yang-00`
 
-This tag will cause `draft-ietf-tcpm-yang-tcp-07` to be built.
+This tag will cause `draft-mahesh-bess-srv6-mup-yang-01` to be built.
 
 ## Native Build
 
