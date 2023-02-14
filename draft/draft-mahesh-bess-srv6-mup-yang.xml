@@ -17,7 +17,7 @@
   xmlns:xi="http://www.w3.org/2001/XInclude"
   category="std"
   consensus="true"
-  docName="draft-mahesh-spring-srv6-mobile-yang-latest"
+  docName="draft-mahesh-bess-srv6-mup-yang-latest"
   ipr="trust200902"
   obsoletes=""
   submissionType="IETF"
@@ -26,8 +26,8 @@
   version="3">
 
   <front>
-    <title abbrev="SRv6 Mobile YANG Model">A YANG Model for SRv6 Mobile User Plane</title>
-    <seriesInfo name="Internet-Draft" value="draft-mahesh-spring-srv6-mobile-yang-latest"/>
+    <title abbrev="SRv6 MUP YANG Model">A YANG Data Model for SRv6 Mobile User Plane</title>
+    <seriesInfo name="Internet-Draft" value="draft-mahesh-bess-srv6-mup-yang-latest"/>
    
     <author fullname="Mahesh Jethanandani" initials="M." role="editor" surname="Jethanandani">
       <organization>Arrcus, Inc</organization>
@@ -59,6 +59,21 @@
         <uri/>
       </address>
     </author>
+    <author fullname="Kalyani Rajaram" initials="K." surname="Rajaram">
+      <organization>Arrcus, Inc</organization>
+      <address>
+        <postal>
+          <street/>
+          <city/>
+          <region/>
+          <code/>
+          <country/>
+        </postal>
+        <phone/>
+        <email>kalyanir@arrcus.com</email>
+        <uri/>
+      </address>
+    </author>
    
     <date/>
     <area>Routing</area>
@@ -68,7 +83,7 @@
 
     <abstract>
       <t>This document defines a YANG data model for configuration
-      and management of SRv6 for the mobile network.</t>
+      and management of Mobile User Plane (MUP) in a SRv6 network.</t>
     </abstract>
   </front>
 
@@ -88,24 +103,21 @@
       mobile node. The SRv6 Endpoint nodes serve as mobile user-plane
       anchors.</t>
 
-      <t>For example, in an Enhanced mode topology, the intermediate
-      waypoints, SIDs, can be used for Traffic Engineering. For more
-      details, see <xref
-      target="I-D.ietf-dmm-srv6-mobile-uplane">Segment Routing IPv6
-      for Mobile User Plane</xref>, Section 5.2. The gNB and UPF are
-      SR-aware, and there are two service segments, one for traffic
-      engineering to support a low latency path, and the other for
-      service programming. In such a topology the operator routes the
-      traffic through these SRv6 nodes, so they can perform their
-      Endpoint functionality and forward the packet. Further, in the
-      uplink direction, when the gNB receives a packet from a UE, it
-      adds the segments of the SR policy to route the traffic through
-      those two segments, while doing something similar in the
-      downlink direction.</t>
+      <t><xref target="I-D.mhkk-dmm-srv6mup-architecture">Segment
+      Routing IPv6 Mobile User Plane Architecture For Distributed
+      Mobility Management</xref>, defines the Segment Routing IPv6
+      Mobile User Plane (SRv6 MUP) architecture for Distributed
+      Mobility Management. As part of the architecture, the document
+      defines a new SRv6 segment type called as a MUP Segment, new
+      routing information that can carried within BGP, and advertised
+      from a PE and a MUP Controller. <xref
+      target="I-D.mpmz-bess-mup-safi">BGP Extensions for Mobile User
+      Plane (MUP) SAFI</xref> further defines a new Subsequent Address
+      Family Indicator (SAFI) for the BGP Mobile User Plane (BGP-MUP)
+      to support MUP extensions for BGP.</t>
       
       <t>This document describes a <xref target="RFC7950">YANG 1.1
-      </xref> data model for the Segment Routing IPv6 (SRv6) user
-      plane of mobile networks.</t>
+      </xref> data model for BGP-MUP.</t>
       
       <t>The model conforms to the <xref target="RFC8342">NMDA</xref>
       architecture.</t>
@@ -119,6 +131,18 @@
 	target="RFC2119"/> <xref target="RFC8174"/> when, and 
 	only when, they appear in all capitals, as shown here.</t>
       </section>
+      <section>
+	<name>Note to RFC Editors</name>
+        <t>This document uses several placeholder values throughout
+        the document. Please replace them as follows and remove this
+        note before publication.</t>
+
+        <t>RFC XXXX, where XXXX is the number assigned to this
+        document at the time of publication.</t>
+
+        <t>YYYY-MM-DD with the actual date of the publication of this
+        document.</t>
+      </section>
     </section>
 
     <section>
@@ -127,23 +151,15 @@
 	This document references terms defined in other documents.  In
 	particular, it imports definitions for the following terms
 	from <xref target="RFC8402">Segment Routing
-	Architecture</xref>, and <xref target="RFC8754">IPv6 Segment
-	Routing Header (SRH)</xref>.
+	Architecture</xref>.
       </t>
 
       <ul>
 	<li>Active Segment</li>
 	<li>BGP-Prefix Segment</li>
-	<li>Prefix SID</li>
 	<li>Segment</li>
-	<li>SID</li>
-	<li>SRH</li>
         <li>SRv6</li>
-	<li>SRv6 Endpoint nodes</li>
-	<li>SRv6 SID</li>
 	<li>Segment Routing domain (SR domain)</li>
-	<li>SR Global Block (SRGB)</li>
-	<li>SR Local Block (SRLB)</li>
       </ul>
 	
       <section>
@@ -157,13 +173,15 @@
             <tr><th>Acronym</th><th>Definition</th></tr>
           </thead>
           <tbody>
-	    <tr><td>gNB</td><td>gNodeB, a 5G Base Station using New
-	    Radio technology</td></tr>
             <tr><td>MUP</td><td>Mobile User Plane</td></tr>
+	    <tr><td>RD</td><td>Route Distinguisher</td></tr>
+	    <tr><td>RT</td><td>Route Target</td></tr>
+	    <tr><td>SAFI</td><td>Subsequent Address Family
+	    Indicator</td></tr>
             <tr><td>SR</td><td>Segment Routing</td></tr>
             <tr><td>SRv6</td><td>Segment Routing over v6</td></tr>
-            <tr><td>UE</td><td>User Equipment</td></tr>
-            <tr><td>UPF</td><td>User Plane Function</td></tr>
+            <tr><td>VRF</td><td>Virtual Routing and
+            Forwarding</td></tr>
           </tbody>
 	</table>
       </section>
@@ -177,7 +195,7 @@
       <figure>
 	<name>Tree Diagram for SRv6 YANG Model</name>
         <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD-sub-tree.txt)
+INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD-sub-tree.txt)
 
 ]]></artwork>
       </figure>
@@ -185,34 +203,45 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD-sub-tree.txt)
     </section>
     <section>
       <name>YANG Model</name>
-      <t>The YANG model is divided into two parts. The first part of
-      the model augments the BGP model in <xref
-      target="I-D.ietf-idr-bgp-model"> BGP Model for Service Provider
-      Network</xref> for the BGP configuration, while the second part
-      augments the BGP Routing Policy model in <xref
-      target="I-D.ietf-idr-bgp-model">BGP Model for Service Provider
-      Network</xref>.</t>
+      <t>The YANG model is divided into two parts. The first and the
+      main part of the model augments the BGP model in <xref
+      target="I-D.ietf-idr-bgp-model"> YANG Model for Border Gateway
+      Protocol (BGP-4)</xref> for the BGP configuration, while the
+      second part augments the Network Instance YANG model in <xref
+      target="RFC8529">YANG Data Model for Network Instances</xref> to
+      add in configuration related to MUP at a VRF level, e.g., Route
+      Distinguisher (RD).
+      </t>
 
-      <t>The BGP model is augmented both at a global level to add SRv6
-      configuration, and at the route selection option. The BGP policy
-      model is augemented to add a defined set, a set of match
-      options, and a set of actions.</t>
+      <t>This model defines two new SAFIs called 'ipv4-mup' and
+      'ipv6-mup'. The BGP model is augmented at a global, and at a
+      neighbor level to add MUP configuration. In addition, containers
+      for AFI/SAFI of type 'ipv4-unicast', 'ipv6-unicast',
+      'l3vpn-ipv4-unicast', and 'l3vpn-ipv6-unicast' are augmented to
+      add Route Targets (RT). Finally, the Network Instance model is
+      augmented to add VRF specific configuration for the MUP
+      segments.</t>
       
       <t>The model imports <xref target="RFC6991">Common YANG Data
-      Types </xref>, <xref target="RFC8349">A YANG Data Model for
-      Routing Management(NMDA Version)</xref>, <xref
-      target="RFC9067">A YANG Data Model for Routing Policy</xref>,
-      <xref target="RFC9020">YANG Data Model for Segment
-      Routing</xref>, <xref target="I-D.ietf-spring-srv6-yang">YANG
-      Data Model for SRv6 Base and Static</xref>, and <xref
-      target="I-D.ietf-idr-bgp-model">BGP Model for Service Provider
-      Network</xref>.</t>
+      Types </xref>, <xref target="RFC8294">Common YANG Data Types for
+      the Routing Area</xref>, <xref target="RFC8343">A YANG Data
+      Model for Interface Management</xref>, <xref target="RFC8349">A
+      YANG Data Model for Routing Management(NMDA Version)</xref>,
+      <xref target="RFC8529">YANG Data Model for Network
+      Instances</xref>, <xref target="RFC9067">A YANG Data Model for
+      Routing Policy</xref>, <xref target="RFC9020">YANG Data Model
+      for Segment Routing</xref>, <xref target="RFC9067">A YANG Data
+      Model for Routing Policy</xref>, <xref
+      target="I-D.ietf-spring-srv6-yang">YANG Data Model for SRv6 Base
+      and Static</xref>, and <xref target="I-D.ietf-idr-bgp-model">BGP
+      Model for Service Provider Network</xref>.
+      </t>
       
       <figure>
-        <name>SRv6 YANG Model for Mobile User Plane</name>
+        <name>YANG Model for Mobile User Plane</name>
           <artwork><![CDATA[
-<CODE BEGINS> file "ietf-srv6-mobile@YYYY-MM-DD.yang"
-INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD.yang)
+<CODE BEGINS> file "ietf-mup@YYYY-MM-DD.yang"
+INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD.yang)
 <CODE ENDS>
 
 ]]></artwork>
@@ -230,7 +259,7 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD.yang)
 
       <dl newline="false" spacing="compact" indent="3">
         <dt>URI:</dt>
-        <dd>urn:ietf:params:xml:ns:yang:ietf-srv6-mobile</dd>
+        <dd>urn:ietf:params:xml:ns:yang:ietf-mup</dd>
         <dt>Registrant Contact:</dt>
         <dd>The IESG.</dd>
         <dt>XML:</dt>
@@ -244,9 +273,9 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD.yang)
 
       <dl newline="false" spacing="compact" indent="3">
         <dt>Name:</dt>
-        <dd>ietf-srv6-mobile</dd>
+        <dd>ietf-mup</dd>
         <dt>Namespace:</dt>
-        <dd>urn:ietf:params:xml:ns:yang:ietf-srv6-mobile</dd>
+        <dd>urn:ietf:params:xml:ns:yang:ietf-mup</dd>
         <dt>Prefix:</dt>
         <dd>srv6-mob</dd>
         <dt>Reference:</dt>
@@ -314,38 +343,76 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD.yang)
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.7950.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8040.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8174.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8294.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8340.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8341.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8342.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8343.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8349.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8402.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8446.xml"/>
-        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8754.xml"/>
+        <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.8529.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9020.xml"/>
         <xi:include href="https://www.rfc-editor.org/refs/bibxml/reference.RFC.9067.xml"/>
 	<?rfc include='reference.I-D.ietf-idr-bgp-model.xml'?>
 	<?rfc include='reference.I-D.ietf-spring-srv6-yang.xml'?>
+	<?rfc include='reference.I-D.mpmz-bess-mup-safi.xml'?>
+	<?rfc include='reference.I-D.mhkk-dmm-srv6mup-architecture.xml'?>
       </references>
  
       <references>
         <name>Informative References</name>
-	<?rfc include='reference.I-D.ietf-dmm-srv6-mobile-uplane.xml'?>
       </references>
     </references>
     
     <section>
-      <name>Appendix 1 Complete Tree Diagram</name>
+      <name>Complete Tree Diagram</name>
       <t>Here is a complete tree diagram for the configuration and
       operational part of the model.</t>
       <figure>
 	<name>Complete tree diagram</name>
         <artwork><![CDATA[
-INSERT_TEXT_FROM_FILE(../bin/ietf-srv6-mobile@YYYY-MM-DD-tree.txt)
+INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD-tree.txt)
 
 ]]></artwork>
       </figure>
     </section>
 
+    <section>
+      <name>Configuration examples</name>
+      <t>This section documents some example configurations for MUP.</t>
+      <section>
+	<name>MUP configuration under BGP</name>
+	<figure>
+	  <name>MUP configuration under BGP</name>
+          <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.1.xml)
+
+]]></artwork>
+	</figure>
+      </section>
+      <section>
+	<name>Example MUP configuration of SRv6.</name>
+	<figure>
+	  <name>Example MUP configuration in BGP for SRv6</name>
+          <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.2.xml)
+
+]]></artwork>
+	</figure>
+      </section>
+
+      <section>
+	<name>Example MUP configuration for RT.</name>
+	<figure>
+	  <name>Example MUP configuration in BGP for RT</name>
+          <artwork><![CDATA[
+INSERT_TEXT_FROM_FILE(../src/yang/example-mup-configuration-a.1.3.xml)
+
+]]></artwork>
+	</figure>
+      </section>
+    </section>
     <section anchor="Acknowledgements" numbered="false">
       <name>Acknowledgements</name>
       <t>TBA</t>
