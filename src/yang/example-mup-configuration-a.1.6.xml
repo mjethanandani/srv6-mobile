@@ -1,6 +1,6 @@
 <!--
     This example shows a MUP configuration for the controller
-    for the VRF of n3_1.
+    for the VRF for decapsulations.
 -->
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -55,9 +55,6 @@
 	      <decapsulations>
 		<decapsulation>
 		  <id>1</id>
-		  <n4-network-instance>
-		    <core>dnn.keysight1.com</core>
-		  </n4-network-instance>
 		  <mup-ext-communities>
 		    <mup-ext-community>100:100</mup-ext-community>
 		    <mup-ext-community>200:200</mup-ext-community>
@@ -65,9 +62,6 @@
 		</decapsulation>
 		<decapsulation>
 		  <id>2</id>
-		  <n4-network-instance>
-		    <core>dnn.keysight20.com</core>
-		  </n4-network-instance>
 		  <mup-ext-communities>
 		    <mup-ext-community>100:1020</mup-ext-community>
 		    <mup-ext-community>200:2020</mup-ext-community>

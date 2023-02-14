@@ -74,6 +74,21 @@
         <uri/>
       </address>
     </author>
+    <author fullname="Satoru Matsushima" initials="S." surname="Matsushima">
+      <organization>SoftBank</organization>
+      <address>
+        <postal>
+          <street/>
+          <city/>
+          <region/>
+          <code/>
+          <country/>
+        </postal>
+        <phone/>
+        <email>satoru.matsushima@g.softbank.co.jp</email>
+        <uri/>
+      </address>
+    </author>
    
     <date/>
     <area>Routing</area>

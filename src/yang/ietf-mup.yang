@@ -284,64 +284,11 @@ module ietf-mup {
 
     uses rt;
 
-    container import-from-global {
-      presence "Presence container for import from global.";
-      description
-        "Import from global routing table";
-
-      leaf advertise-as-mup {
-        type boolean;
-        default true;
-        description
-          "Advertise routes imported from global table as MUP
-           routes";
-      }
-
-      leaf route-policy {
-        type leafref {
-          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
-               "rt-pol:policy-definition/rt-pol:name";
-          require-instance true;
-        }
-        description
-          "Route policy as a filter for importing routes.";
-      }
-
-      leaf bgp-valid-route {
-        type boolean;
-        default false;
-        description
-          "Enable all valid routes (including non-best paths) to be
-           candidate for import";
-      }
-
-      leaf protocol {
-        type identityref {
-          base rt:routing-protocol;
-        }
-        description
-          "Specifies the protocol from which routes are imported.";
-      }
-
-      leaf instance {
-        type string;
-        description
-          "Specifies the instance id of the protocol";
-      }
-    }
-
-    leaf export-to-global {
-      type boolean;
-      default false;
-      description
-        "When set to true, export to global is enabled.";
-    }
-
     container routing-table-limit {
       description
         "The routing-table limit command sets a limit on the maximum
-         number of routes that the IPv4 or IPv6 address family of a
-         MUP instance can support.
+         number of routes imported that the IPv4 or IPv6 address
+         family of a MUP instance can support.
 
          By default, there is no limit on the maximum number of
          routes that the IPv4 or IPv6 address family of a MUP
@@ -349,42 +296,56 @@ module ietf-mup {
          network and public network routes on a device cannot
          exceed the allowed maximum number of unicast routes.";
 
-      leaf number {
-        type uint32 {
-          range "1..max";
-        }
+      list routes {
+        key "type";
         description
-          "Specifies the maximum number of routes supported by a
-           MUP instance. ";
-      }
+          "List of routes that need to be limited by type.";
 
-      choice action {
-        description
-          "Choice of actions to take.";
-
-        leaf percent {
-          type rt-types:percentage;
+        leaf type {
+          type identityref {
+            base segment-type;
+          }
           description
-            "Specifies the percentage of the maximum number of
-             routes. When the maximum number of routes that join
-             the MUP instance is up to the value
-             (number*percent)/100, the system prompts alarms.
-             The MUP routes can be still added to the routing
-             table, but after the number of routes reaches number,
-             the subsequent routes are dropped.";
+            "The type of route on which a limit is being placed.";
         }
 
-        leaf simple {
-          type boolean;
+        leaf number {
+          type uint32 {
+            range "1..max";
+          }
           description
-            "Indicates that when MUP routes exceed number, routes
-             can still be added into the routing table, but the
-             system prompts alarms.
+            "Specifies the maximum number of routes supported by a
+             MUP instance. ";
+        }
+
+        choice action {
+          description
+            "Choice of actions to take.";
+
+          leaf percent {
+            type rt-types:percentage;
+            description
+              "Specifies the percentage of the maximum number of
+               routes. When the maximum number of routes that join
+               the MUP instance is up to the value
+               (number*percent)/100, the system prompts alarms.
+               The MUP routes can be still added to the routing
+               table, but after the number of routes reaches number,
+               the subsequent routes are dropped.";
+          }
+
+          leaf simple {
+            type boolean;
+            description
+              "Indicates that when MUP routes exceed number, routes
+               can still be added into the routing table, but the
+               system prompts alarms.
              
-             However, after the total number of VPN routes and
-             network public routes reaches the unicast route limit
-             specified in the License, the subsequent routes
-             are dropped.";
+               However, after the total number of VPN routes and
+               network public routes reaches the unicast route limit
+               specified in the License, the subsequent routes
+               are dropped.";
+          }
         }
       }
     }
@@ -710,32 +671,6 @@ module ietf-mup {
               "Encapsulation specific locator.";
           }
 
-          container n4-network-instance {
-            description
-              "N4 network instance configuration.";
-
-            leaf routing-policy {
-              type leafref {
-                path "/rt-pol:routing-policy" +
-                     "/rt-pol:policy-definitions/" +
-                     "rt-pol:policy-definition/rt-pol:name";
-              }
-              must "boolean(current()/../access)" {
-                error-message
-                  "SRv6 Mobile access instance name must be
-                   configured";
-              }
-              description
-                "Reference to routing-policy";
-
-            }
-
-            leaf-list access {
-              type string;
-              description
-                "Access instance";
-            }
-          }
         }
 
         container decapsulations {
@@ -763,16 +698,6 @@ module ietf-mup {
               }
               description
                 "Encapsulation specific locator.";
-            }
-
-            container n4-network-instance {
-              leaf core {
-                type string;
-                description
-                  "Advertise Type-2 ST route.";
-              }
-              description
-                "n4 network instance.";
             }
 
             container mup-ext-communities {
