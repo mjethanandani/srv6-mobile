@@ -12,7 +12,7 @@ If the repository does not have all the latest tags uploaded, one can create a l
 
 `git tag draft-mahesh-bess-srv6-mup-yang-<version>`
 
-where the `version` field is the current published version of the draft. For example, if the current published version is -12, then the tag created should be:
+where the `version` field is the current published version of the draft. For example, if the current published version is -00, then the tag created should be:
 
 `git tag draft-mahesh-bess-srv6-mup-yang-00`
 
@@ -55,9 +55,10 @@ Once all the tools are installed the following commands will build the draft
 
 ## Build using Docker
 
-In one does not want to be bothered with all the tools necessary to build
-the draft, one can use Docker. Make sure Docker is installed and in the
-root of the repository type
+In one does not want to be bothered with all the tools necessary to
+build the draft, one can use Docker. The Docker image is
+mjethanandani/build-yang:latest. Make sure Docker is installed and in
+the root of the repository type
 
 `% make`
 
@@ -67,4 +68,5 @@ or
 
 ### Output of Docker build
 
-Since Docker mounts the host file system while building this draft, it will deposit the output of the build on the host file system.
+Since Docker mounts the host file system while building this draft, it
+will deposit the output of the build on the host file system.
