@@ -116,11 +116,9 @@
       Family Indicator (SAFI) for the BGP Mobile User Plane (BGP-MUP)
       to support MUP extensions for BGP.</t>
       
-      <t>This document describes a <xref target="RFC7950">YANG 1.1
-      </xref> data model for BGP-MUP.</t>
-      
-      <t>The model conforms to the <xref target="RFC8342">NMDA</xref>
-      architecture.</t>
+      <t>This document defines a <xref target="RFC7950">YANG 1.1
+      </xref> data model for BGP-MUP. The model conforms to the <xref
+      target="RFC8342">NMDA</xref> architecture.</t>
 
       <section>
 	<name>Requirements Language</name>
