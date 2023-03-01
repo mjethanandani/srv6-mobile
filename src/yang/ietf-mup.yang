@@ -127,30 +127,6 @@ module ietf-mup {
       "A single segment ID is used.";
   }
 
-  identity label-allocation-mode {
-    description
-      "Base identity to be used to express types of label allocation
-       strategies.";
-  }
-
-  identity per-prefix {
-    base label-allocation-mode;
-    description
-      "A label is to be allocated per prefix entry in the RIB.";
-  }
-
-  identity per-nexthop {
-    base label-allocation-mode;
-    description
-      "A label is to be allocated per nexthop entry in the RIB.";
-  }
-
-  identity instance-label {
-    base label-allocation-mode;
-    description
-      "A single label is to be used for the instance.";
-  }
-
   /*
    * Typedefs
    */
@@ -166,7 +142,9 @@ module ietf-mup {
     }
     description
       "A type definition utilised to define the extended community
-      in routes of Mobile User Plane (MUP) SAFI";
+       in routes of Mobile User Plane (MUP) SAFI. The above pattern
+       is a placeholder regex, till such time that a format for it has
+       been defined.";
   }
 
   /*
@@ -616,33 +594,9 @@ module ietf-mup {
           "Is the locator enabled for micro-segment behavior?";
       }
 
-      leaf label-allocation-mode {
-        type identityref {
-          base label-allocation-mode;
-        }
-        must "not(../sid-allocation-mode)" {
-        error-message
-          "label-allocation-mode and sid-allocation-mode cannot "+
-          "co-exist";
-        }
-        must "not((../mobile/encapsulation/locator) or " +
-             "(../locator))" {
-          error-message
-            "SRv6 configurations must be removed first.";
-        }
-        description
-          "The label-allocation-mode to be used for L3 entries
-           in the network instance";
-      }
-
       leaf sid-allocation-mode {
         type identityref {
           base sid-allocation-mode;
-        }
-        must "not(../label-allocation-mode)" {
-          error-message
-            "label-allocation-mode and sid-allocation-mode cannot " +
-            "co-exist";
         }
         must "boolean((../mobile/encapsulation/locator) or " +
              "(../mobile/decapsulations/decapsulation/locator) or " +
@@ -717,7 +671,7 @@ module ietf-mup {
   }
 
   /*
-   * Network Instance configuraation.
+   * Network Instance configuration.
    */
   augment "/ni:network-instances/ni:network-instance/ni:ni-type" {
      description
