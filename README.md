@@ -57,7 +57,7 @@ Once all the tools are installed the following commands will build the draft
 
 In one does not want to be bothered with all the tools necessary to
 build the draft, one can use Docker. The Docker image is
-mjethanandani/build-yang:latest. Make sure Docker is installed and in
+mjethanandani/build-yang:latest. Make sure Docker is installed, and in
 the root of the repository type
 
 `% make`
