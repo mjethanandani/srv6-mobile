@@ -1,7 +1,7 @@
 module ietf-mup {
   yang-version "1.1";
   namespace "urn:ietf:params:xml:ns:yang:ietf-mup";
-  prefix "srv6-mob";
+  prefix "ietf-mup";
 
   import ietf-yang-types {
     prefix yang;
@@ -206,24 +206,6 @@ module ietf-mup {
     base segment-type;
     description
       "The Direct Segment Discovery Route Type.";
-    reference
-      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
-                               User Plane (MUP) SAFI.";
-  }
-
-  identity type-1-st {
-    base segment-type;
-    description
-      "Type 1 Session Transformed (ST) Route Type.";
-    reference
-      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
-                               User Plane (MUP) SAFI.";
-  }
-
-  identity type-2-st {
-    base segment-type;
-    description
-      "Type 2 Session Transformed (ST) Route Type.";
     reference
       "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
                                User Plane (MUP) SAFI.";
