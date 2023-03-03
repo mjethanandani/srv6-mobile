@@ -479,7 +479,7 @@ module ietf-mup {
                  Some valid examples are 0:100:100, 1:1.1.1.1:100,
                  2:1234567890:203, and 6:26:00:08:92:78:00.";
             }
-            
+
             leaf type {
               type rt-types:route-target-type;
               description
