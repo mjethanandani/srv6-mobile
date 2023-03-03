@@ -1,6 +1,6 @@
 <!--
     This example shows a MUP configuration for the controller
-    for the VRF of n6_1.
+    for the VRF of ...
 -->
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -49,16 +49,6 @@
 	      </ipv4-mup>
 	    </afi-safi>
 	  </afi-safis>
-	  <srv6
-	      xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
-	    <mobile>
-	      <encapsulation>
-		<n4-network-instance>
-		  <access>n3-nw-v4-1</access>
-		</n4-network-instance>
-	      </encapsulation>
-	    </mobile>
-	  </srv6>
         </global>
       </bgp>
     </control-plane-protocol>

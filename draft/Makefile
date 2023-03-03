@@ -40,7 +40,11 @@ clean:
 	-rm -f $(draft).txt $(draft).html index.html
 	-rm -f $(next).txt $(next).html
 	-rm -f $(draft)-[0-9][0-9].xml
+	-rm -f $(draft)-[0-9][0-9].txt
+	-rm -f $(draft)-[0-9][0-9].html
 	-rm -f $(draft)-.xml
+	-rm -f $(draft)-.txt
+	-rm -f $(draft)-.html
 
 ifeq (md,$(draft_type))
 	-rm -f $(draft).xml
