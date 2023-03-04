@@ -232,6 +232,83 @@ module ietf-mup {
   /*
    * Groupings
    */
+  grouping rt-afi-safis {
+    description
+      "Grouping for configuration of route targets for AFI/SAFIs.";
+
+    container rt-afi-safis {
+      description
+        "Container for configuration of Route Targets for address
+         family list.";
+
+      list rt-afi-safi {
+        key "name";
+        description
+          "List of afi-safi types.";
+
+        leaf name {
+          type identityref {
+            base bt:afi-safi-type;
+          }
+          must "derived-from-or-self(., 'ipv4-mup')  or " +
+               "derived-from-or-self(., 'ipv6-mup')" {
+            error-message
+              "Only ipv4-mup or ipv6-mup are supported.";
+          }
+          description
+            "Name of the AFI/SAFI type.";
+        }
+
+        container route-targets {
+          description
+            "Route Targets for a network instance.";
+
+          list route-target {
+            key "target type";
+
+            description
+              "List of route targets.";
+
+            leaf target {
+              type rt-types:route-target;
+              description
+                "A Route Target is an 8-octet BGP extended community
+                 initially identifying a set of sites in a BGP VPN
+                 (RFC 4364).  However, it has since taken on a more
+                 general role in BGP route filtering.  A Route Target
+                 consists of two or three fields: a 2-octet Type
+                 field, an administrator field, and, optionally, an
+                 assigned number field.
+
+                 According to the data formats for types 0, 1, 2, and
+                 6 as defined in RFC 4360, RFC 5668, and RFC 7432,
+                 the encoding pattern is defined as:
+
+                 0:2-octet-asn:4-octet-number
+                 1:4-octet-ipv4addr:2-octet-number
+                 2:4-octet-asn:2-octet-number
+                 6:6-octet-mac-address
+
+                 Additionally, a generic pattern is defined for future
+                 Route Target types:
+
+                 2-octet-other-hex-number:6-octet-hex-number
+
+                 Some valid examples are 0:100:100, 1:1.1.1.1:100,
+                 2:1234567890:203, and 6:26:00:08:92:78:00.";
+            }
+
+            leaf type {
+              type rt-types:route-target-type;
+              description
+                "Reference to route-target type.";
+            }
+          }
+        }
+      }
+    }
+  }
+
   grouping rt {
     description
       "Grouping for RT configuration.";
@@ -402,6 +479,7 @@ module ietf-mup {
            IPv4 MUP.";
       }
       uses bgp-mup;
+      uses rt-afi-safis;
       description
         "IPv4 MUP configuration and management.";
     }
@@ -414,81 +492,9 @@ module ietf-mup {
            IPv6 MUP.";
       }
       uses bgp-mup;
+      uses rt-afi-safis;
       description
         "IPv6 MUP configuration and management.";
-    }
-
-    container rt-afi-safis {
-      description
-        "Container for configuration of Route Targets for address
-         family list.";
-
-      list rt-afi-safi {
-        key "name";
-        description
-          "List of afi-safi types.";
-
-        leaf name {
-          type identityref {
-            base bt:afi-safi-type;
-          }
-          must "derived-from-or-self(., 'ipv4-mup')  or " +
-               "derived-from-or-self(., 'ipv6-mup')" {
-            error-message
-              "Only ipv4-mup or ipv6-mup are supported.";
-          }
-          description
-            "Name of the AFI/SAFI type.";
-        }
-
-        container route-targets {
-          description
-            "Route Targets for a network instance.";
-
-          list route-target {
-            key "target type";
-
-            description
-              "List of route targets.";
-
-            leaf target {
-              type rt-types:route-target;
-              description
-                "A Route Target is an 8-octet BGP extended community
-                 initially identifying a set of sites in a BGP VPN
-                 (RFC 4364).  However, it has since taken on a more
-                 general role in BGP route filtering.  A Route Target
-                 consists of two or three fields: a 2-octet Type
-                 field, an administrator field, and, optionally, an
-                 assigned number field.
-
-                 According to the data formats for types 0, 1, 2, and
-                 6 as defined in RFC 4360, RFC 5668, and RFC 7432,
-                 the encoding pattern is defined as:
-
-                 0:2-octet-asn:4-octet-number
-                 1:4-octet-ipv4addr:2-octet-number
-                 2:4-octet-asn:2-octet-number
-                 6:6-octet-mac-address
-
-                 Additionally, a generic pattern is defined for future
-                 Route Target types:
-
-                 2-octet-other-hex-number:6-octet-hex-number
-
-                 Some valid examples are 0:100:100, 1:1.1.1.1:100,
-                 2:1234567890:203, and 6:26:00:08:92:78:00.";
-            }
-
-            leaf type {
-              type rt-types:route-target-type;
-              description
-                "Reference to route-target type.";
-            }
-          }
-
-        }
-      }
     }
   }
 
