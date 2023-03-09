@@ -185,6 +185,14 @@ module ietf-mup {
                                User Plane (MUP) SAFI.";
   }
 
+  identity route-type {
+    description
+      "Base identity for Route Type.";
+    reference
+      "I-D.mpmz-bess-mup-safi: BGP Extensions for the Mobile
+                               User Plane (MUP) SAFI.";
+  }
+
   identity segment-type {
     description
       "Base identity for Segment Type.";
@@ -194,6 +202,7 @@ module ietf-mup {
   }
 
   identity interwork {
+    base route-type;
     base segment-type;
     description
       "The Interwork Segment Discovery Route Type.";
@@ -203,6 +212,7 @@ module ietf-mup {
   }
 
   identity direct {
+    base route-type;
     base segment-type;
     description
       "The Direct Segment Discovery Route Type.";
@@ -212,7 +222,7 @@ module ietf-mup {
   }
 
   identity type-1-st {
-    base segment-type;
+    base route-type;
     description
       "Type 1 Session Transformed (ST) Route Type.";
     reference
@@ -221,7 +231,7 @@ module ietf-mup {
   }
 
   identity type-2-st {
-    base segment-type;
+    base route-type;
     description
       "Type 2 Session Transformed (ST) Route Type.";
     reference
@@ -232,19 +242,19 @@ module ietf-mup {
   /*
    * Groupings
    */
-  grouping rt-afi-safis {
+  grouping rts {
     description
       "Grouping for configuration of route targets for AFI/SAFIs.";
 
-    container rt-afi-safis {
+    container rts {
       description
         "Container for configuration of Route Targets for address
          family list.";
 
-      list rt-afi-safi {
+      list rt {
         key "name";
         description
-          "List of afi-safi types.";
+          "List of route targets for a given afi-safi type.";
 
         leaf name {
           type identityref {
@@ -305,30 +315,16 @@ module ietf-mup {
             }
           }
         }
-      }
-    }
-  }
-
-  grouping rt {
-    description
-      "Grouping for RT configuration.";
-
-    container rt {
-      description
-        "Container for route targets associated with this
-         AFI/SAFI.";
-
-      uses rt-types:vpn-route-targets;
-
-      leaf route-policy {
-        type leafref {
-          path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
-               "rt-pol:policy-definition/rt-pol:name";
-          require-instance true;
+        leaf route-policy {
+          type leafref {
+            path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+                 "rt-pol:policy-definition/rt-pol:name";
+            require-instance true;
+          }
+          description
+            "Reference to the route policy containing set of
+             route-targets.";
         }
-        description
-          "Reference to the route policy containing set of 
-           route-targets.";
       }
     }
   }
@@ -337,7 +333,7 @@ module ietf-mup {
     description
       "BGP-MUP NLRI configuration.";
 
-    uses rt;
+    uses rts;
 
     container routing-table-limit {
       description
@@ -358,7 +354,7 @@ module ietf-mup {
 
         leaf type {
           type identityref {
-            base segment-type;
+            base route-type;
           }
           description
             "The type of route on which a limit is being placed.";
@@ -479,7 +475,6 @@ module ietf-mup {
            IPv4 MUP.";
       }
       uses bgp-mup;
-      uses rt-afi-safis;
       description
         "IPv4 MUP configuration and management.";
     }
@@ -492,7 +487,6 @@ module ietf-mup {
            IPv6 MUP.";
       }
       uses bgp-mup;
-      uses rt-afi-safis;
       description
         "IPv6 MUP configuration and management.";
     }
@@ -504,7 +498,7 @@ module ietf-mup {
     description
       "Augmentation of the BGP model to add RT for ipv4-unicast.";
 
-    uses rt;
+    uses rts;
   }
 
   augment "/rt:routing/rt:control-plane-protocols" +
@@ -513,7 +507,7 @@ module ietf-mup {
     description
       "Augmentation of the BGP model to add RT for ipv6-unicast.";
 
-    uses rt;
+    uses rts;
   }
 
   augment "/rt:routing/rt:control-plane-protocols" +
@@ -523,7 +517,7 @@ module ietf-mup {
       "Augmentation of the BGP model to add RT for
        l3vpn-ipv4-unicast.";
 
-    uses rt;
+    uses rts;
   }
 
   augment "/rt:routing/rt:control-plane-protocols" +
@@ -533,7 +527,7 @@ module ietf-mup {
       "Augmentation of the BGP model to add RT for
        l3vpn-ipv6-unicast.";
 
-    uses rt;
+    uses rts;
   }
 
   augment "/rt:routing/rt:control-plane-protocols" +

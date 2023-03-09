@@ -97,16 +97,21 @@
 		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
 	      <ipv4-mup
 		  xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
-		<rt>
-		  <vpn-target>
-		    <route-target>100:6000</route-target>
-		    <route-target-type>import</route-target-type>
-		  </vpn-target>
-		  <vpn-target>
-		    <route-target>100:4000</route-target>
-		    <route-target-type>export</route-target-type>
-		  </vpn-target>
-		</rt>
+		<rts>
+		  <rt>
+		    <name>ipv4-mup</name>
+		    <route-targets>
+		      <route-target>
+			<target>100:6000</target>
+			<type>import</type>
+		      </route-target>
+		      <route-target>
+			<target>100:4000</target>
+			<type>export</type>
+		      </route-target>
+		    </route-targets>
+		  </rt>
+		</rts>
 		<segment>
 		  <type>interwork</type>
 		  <locator>mup-gw-2</locator>

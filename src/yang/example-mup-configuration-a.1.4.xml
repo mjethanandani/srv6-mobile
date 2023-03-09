@@ -60,12 +60,17 @@
 		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
 	      <ipv4-mup
 		  xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
-		<rt>
-		  <vpn-target>
-		    <route-target>100:5000</route-target>
-		    <route-target-type>both</route-target-type>
-		  </vpn-target>
-		</rt>
+		<rts>
+		  <rt>
+		    <name>ipv4-mup</name>
+		    <route-targets>
+		      <route-target>
+			<target>100:5000</target>
+			<type>both</type>
+		      </route-target>
+		    </route-targets>
+		  </rt>
+		</rts>
 		<segment>
 		  <type>direct</type>
 		  <entry>router-ip</entry>
@@ -74,19 +79,15 @@
 		</segment>
 	      </ipv4-mup>
 	    </afi-safi>
-	    <afi-safi>
-	      <name>bt:ipv4-unicast</name>
-	      <ipv4-unicast>
-		<rt
-		    xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
-		  <vpn-target>
-		    <route-target>100:8000</route-target>
-		    <route-target-type>import</route-target-type>
-		  </vpn-target>
-		</rt>
-	      </ipv4-unicast>
-	    </afi-safi>
 	  </afi-safis>
+	  <!---
+                draft-ietf-bess-l3vpn-yang model defines its
+                route targets under the Network Instance/VRF model.
+
+                Since none of the tools support schema mount,
+                a requirement to mount the NI model, the L3VPN part of
+                the configuration cannot be shown here.
+           -->
         </global>
       </bgp>
     </control-plane-protocol>
