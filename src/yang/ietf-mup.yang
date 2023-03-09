@@ -201,7 +201,7 @@ module ietf-mup {
                                User Plane (MUP) SAFI.";
   }
 
-  identity interwork {
+  identity isd {
     base route-type;
     base segment-type;
     description
@@ -211,7 +211,7 @@ module ietf-mup {
                                User Plane (MUP) SAFI.";
   }
 
-  identity direct {
+  identity dsd {
     base route-type;
     base segment-type;
     description
@@ -419,7 +419,7 @@ module ietf-mup {
           path "/rt:routing/sr:segment-routing/srv6:srv6" +
                "/srv6:locators/srv6:locator/srv6:name";
         }
-        must "derived-from-or-self(../type, 'interwork')";
+        must "derived-from-or-self(../type, 'isd')";
         description
           "Reference to locator in the 'default' VRF
            configuration.";
@@ -442,7 +442,7 @@ module ietf-mup {
 
       leaf-list mup-ext-comm {
         type mup-ext-community-type;
-        must "derived-from-or-self(../type, 'direct')";
+        must "derived-from-or-self(../type, 'dsd')";
         description
           "MUP extended community type.";
       }

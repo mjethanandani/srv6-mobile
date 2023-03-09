@@ -72,7 +72,7 @@
 		  </rt>
 		</rts>
 		<segment>
-		  <type>direct</type>
+		  <type>dsd</type>
 		  <entry>router-ip</entry>
 		  <mup-ext-comm>100:100</mup-ext-comm>
 		  <mup-ext-comm>200:200</mup-ext-comm>

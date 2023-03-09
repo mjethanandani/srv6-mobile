@@ -113,7 +113,7 @@
 		  </rt>
 		</rts>
 		<segment>
-		  <type>interwork</type>
+		  <type>isd</type>
 		  <locator>mup-gw-2</locator>
 		  <entry>swp10</entry>
 		</segment>
