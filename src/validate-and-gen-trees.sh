@@ -60,7 +60,7 @@ for i in yang/example-mup-configuration-a.*.xml
 do
     name=$(echo $i | cut -f 1-3 -d '.')
     echo "Validating $name.xml"
-    response=`yanglint -ii -t config -p ../bin/yang-parameters/ ../bin/yang-parameters/ietf-network-instance@2019-01-21.yang ../bin/yang-parameters/ietf-interfaces@2018-02-20.yang ../bin/yang-parameters/iana-if-type@2021-06-21.yang ../bin/yang-parameters/ietf-network-instance@2019-01-21.yang ../bin/imported-modules/ietf-bgp@2022-10-13.yang ../bin/imported-modules/ietf-srv6-base@2022-01-14.yang ../bin/ietf-mup\@$(date +%Y-%m-%d).yang $name.xml`
+    response=`yanglint -ii -t config -p ../bin/yang-parameters/ ../bin/yang-parameters/ietf-network-instance@2019-01-21.yang ../bin/yang-parameters/ietf-interfaces@2018-02-20.yang ../bin/yang-parameters/iana-if-type@2021-06-21.yang ../bin/yang-parameters/ietf-network-instance@2019-01-21.yang ../bin/imported-modules/ietf-bgp@2023-03-02.yang ../bin/imported-modules/ietf-srv6-base@2022-01-14.yang ../bin/ietf-mup\@$(date +%Y-%m-%d).yang $name.xml`
     if [ $? -ne 0 ]; then
        printf "failed (error code: $?)\n"
        printf "$response\n\n"

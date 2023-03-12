@@ -1,12 +1,16 @@
 import os
 
 list_of_ietf_models =\
-[ ["ietf-bgp", "draft-ietf-idr-bgp-model", "15"],
+[ ["ietf-bgp", "draft-ietf-idr-bgp-model", "16"],
   ["ietf-tcp", "draft-ietf-tcpm-yang-tcp", "09"],
   ["ietf-tcp-common", "draft-ietf-netconf-tcp-client-server", "15"],
   ["ietf-srv6-types", "draft-ietf-spring-srv6-yang", "02"],
   ["ietf-srv6-base", "draft-ietf-spring-srv6-yang", "02"],
-  ["iana-bgp-types", "draft-ietf-idr-bgp-model", "15"] ]
+  ["iana-bgp-types", "draft-ietf-idr-bgp-model", "16"],
+  ["iana-bgp-community", "draft-ietf-idr-bgp-model", "16"],
+  ["ietf-bgp-common", "draft-ietf-idr-bgp-model", "16"],
+  ["iana-bgp-notification", "draft-ietf-idr-bgp-model", "16"],
+  ["ietf-bgp-policy", "draft-ietf-idr-bgp-model", "16"] ]
 
 
 def fetch_and_extract(draft, module, version):
