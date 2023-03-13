@@ -81,7 +81,18 @@
 	      <name
 		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
 	      <ipv4-mup xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
-		<route-policy>route-target-policy</route-policy>
+		<rts>
+		  <rt>
+		    <name>ipv4-mup</name>
+		    <route-targets>
+		      <route-target>
+			<target>100:4000</target>
+			<type>import</type>
+			<route-policy>route-target-policy</route-policy>
+		      </route-target>
+		    </route-targets>
+		  </rt>
+		</rts>
 	      </ipv4-mup>
             </afi-safi>
           </afi-safis>
