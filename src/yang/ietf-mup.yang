@@ -320,17 +320,17 @@ module ietf-mup {
                 "Reference to route-target type.";
             }
 
-	    leaf route-policy {
-	      type leafref {
-		path "/rt-pol:routing-policy" +
-		     "/rt-pol:policy-definitions/" +
+            leaf route-policy {
+              type leafref {
+                path "/rt-pol:routing-policy" +
+                     "/rt-pol:policy-definitions/" +
                      "rt-pol:policy-definition/rt-pol:name";
-		require-instance true;
-	      }
-	      description
-		"Reference to the route policy containing set of
+                require-instance true;
+              }
+              description
+                "Reference to the route policy containing set of
                  route-targets.";
-	    }
+            }
           }
         }
       }
@@ -807,11 +807,11 @@ module ietf-mup {
         "Top-level container for MUP specific policy conditions.";
 
       leaf route-type {
-	type identityref {
+        type identityref {
           base route-type;
-	}
-	description
-	  "Route type to match with.";
+        }
+        description
+          "Route type to match with.";
       }
     }
   }
@@ -824,13 +824,13 @@ module ietf-mup {
 
     container mup-actions {
       description
-	"Container for adding MUP specific actions.";
+        "Container for adding MUP specific actions.";
 
       leaf accept-route {
-	type boolean;
-	default false;
-	description
-	  "Accept this route.";
+        type boolean;
+        default false;
+        description
+          "Accept this route.";
       }
     }
   }
