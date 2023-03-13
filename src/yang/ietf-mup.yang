@@ -42,14 +42,20 @@ module ietf-mup {
   import ietf-bgp {
     prefix bgp;
     reference
-      "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
-       Network.";
+      "I-D.ietf-idr-bgp-model: YANG Data Model for Border
+                               Gateway Protocol 4 (BGP-4).";
   }
   import iana-bgp-types {
     prefix bt;
     reference
-      "I-D.ietf-idr-bgp-model: BGP Model for Service Provider 
-       Network.";
+      "I-D.ietf-idr-bgp-model:  YANG Data Model for Border
+                                Gateway Protocol 4 (BGP-4).";
+  }
+  import ietf-bgp-policy {
+    prefix bp;
+    reference
+      "I-D.ietf-idr-bgp-model:  YANG Data Model for Border
+                                Gateway Protocol 4 (BGP-4).";
   }
   import ietf-segment-routing {
     prefix sr;
@@ -313,17 +319,19 @@ module ietf-mup {
               description
                 "Reference to route-target type.";
             }
+
+            leaf route-policy {
+              type leafref {
+                path "/rt-pol:routing-policy" +
+                     "/rt-pol:policy-definitions/" +
+                     "rt-pol:policy-definition/rt-pol:name";
+                require-instance true;
+              }
+              description
+                "Reference to the route policy containing set of
+                 route-targets.";
+            }
           }
-        }
-        leaf route-policy {
-          type leafref {
-            path "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
-                 "rt-pol:policy-definition/rt-pol:name";
-            require-instance true;
-          }
-          description
-            "Reference to the route policy containing set of
-             route-targets.";
         }
       }
     }
@@ -784,6 +792,45 @@ module ietf-mup {
                as 'auto'.";
           }
         }
+      }
+    }
+  }
+
+  augment "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+          "rt-pol:policy-definition/rt-pol:statements/" +
+          "rt-pol:statement/rt-pol:conditions/bp:bgp-conditions" {
+    description
+      "BGP policy conditions added to routing policy module.";
+
+    container match-mup {
+      description
+        "Top-level container for MUP specific policy conditions.";
+
+      leaf route-type {
+        type identityref {
+          base route-type;
+        }
+        description
+          "Route type to match with.";
+      }
+    }
+  }
+
+  augment "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
+          "rt-pol:policy-definition/rt-pol:statements/" +
+          "rt-pol:statement/rt-pol:actions" {
+    description
+      "MUP policy actions added to routing policy module.";
+
+    container mup-actions {
+      description
+        "Container for adding MUP specific actions.";
+
+      leaf accept-route {
+        type boolean;
+        default false;
+        description
+          "Accept this route.";
       }
     }
   }

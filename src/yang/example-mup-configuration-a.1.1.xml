@@ -1,5 +1,6 @@
 <!--
-    This example shows a MUP configuration.
+    This example shows a MUP configuration, with routing policy
+    configured for route target.
 
     draft-ietf-spring-srv6-yang defines srv6 locators
     under /routing/segment-routing/srv6 path, instead of 
@@ -7,6 +8,37 @@
 -->
 
 <?xml version="1.0" encoding="UTF-8"?>
+<routing-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-routing-policy">
+  <policy-definitions>
+    <policy-definition>
+      <name>route-target-policy</name>
+      <statements>
+        <statement>
+          <name>10</name>
+          <conditions>
+            <bgp-conditions xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp-policy">
+	      <match-mup xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+		<route-type>type-1-st</route-type>
+	      </match-mup>
+	    </bgp-conditions>
+	  </conditions>
+	  <actions xmlns="urn:ietf:params:xml:ns:yang:ietf-routing-policy">
+	    <bgp-actions xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp-policy">
+	      <set-ext-community>
+		<communities>route-target:100:5000</communities>
+		<options>add</options>
+	      </set-ext-community>
+	    </bgp-actions>
+	    <mup-actions xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+	      <accept-route>true</accept-route>
+	    </mup-actions>
+	  </actions>
+	</statement>
+      </statements>
+    </policy-definition>
+  </policy-definitions>
+</routing-policy>
+
 <routing
   xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
   xmlns:bt="urn:ietf:params:xml:ns:yang:iana-bgp-types"
@@ -48,6 +80,20 @@
             <afi-safi>
 	      <name
 		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
+	      <ipv4-mup xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+		<rts>
+		  <rt>
+		    <name>ipv4-mup</name>
+		    <route-targets>
+		      <route-target>
+			<target>100:4000</target>
+			<type>import</type>
+			<route-policy>route-target-policy</route-policy>
+		      </route-target>
+		    </route-targets>
+		  </rt>
+		</rts>
+	      </ipv4-mup>
             </afi-safi>
           </afi-safis>
         </global>
