@@ -320,17 +320,6 @@ module ietf-mup {
                 "Reference to route-target type.";
             }
 
-            leaf route-policy {
-              type leafref {
-                path "/rt-pol:routing-policy" +
-                     "/rt-pol:policy-definitions/" +
-                     "rt-pol:policy-definition/rt-pol:name";
-                require-instance true;
-              }
-              description
-                "Reference to the route policy containing set of
-                 route-targets.";
-            }
           }
         }
       }
@@ -482,6 +471,18 @@ module ietf-mup {
           "This configuration applies only if the identity is
            IPv4 MUP.";
       }
+
+      leaf route-policy {
+	type leafref {
+	  path "/rt-pol:routing-policy" +
+	       "/rt-pol:policy-definitions/" +
+	       "rt-pol:policy-definition/rt-pol:name";
+	  require-instance true;
+	}
+	description
+	  "Reference to the route policy containing set of
+           route-targets.";
+      }
       uses bgp-mup;
       description
         "IPv4 MUP configuration and management.";
@@ -493,6 +494,18 @@ module ietf-mup {
         description
           "This configuration applies only if the identity is
            IPv6 MUP.";
+      }
+
+      leaf route-policy {
+	type leafref {
+	  path "/rt-pol:routing-policy" +
+	       "/rt-pol:policy-definitions/" +
+	       "rt-pol:policy-definition/rt-pol:name";
+	  require-instance true;
+	}
+	description
+	  "Reference to the route policy containing set of
+           route-targets.";
       }
       uses bgp-mup;
       description
