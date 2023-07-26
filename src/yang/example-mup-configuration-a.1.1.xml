@@ -2,9 +2,9 @@
     This example shows a MUP configuration, with routing policy
     configured for route target.
 
-    draft-ietf-spring-srv6-yang defines srv6 locators
-    under /routing/segment-routing/srv6 path, instead of 
-    putting them under BGP.
+draft-ietf-spring-srv6-yang defines srv6 locators
+under /routing/segment-routing/srv6 path, instead of 
+putting them under BGP.
 -->
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -40,12 +40,12 @@
 </routing-policy>
 
 <routing
-  xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
-  xmlns:bt="urn:ietf:params:xml:ns:yang:iana-bgp-types"
-  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
-  xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-routing"
+    xmlns:bt="urn:ietf:params:xml:ns:yang:iana-bgp-types"
+    xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup"
+    xmlns:srv6="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
   <segment-routing
-    xmlns="urn:ietf:params:xml:ns:yang:ietf-segment-routing">
+      xmlns="urn:ietf:params:xml:ns:yang:ietf-segment-routing">
     <srv6
 	xmlns="urn:ietf:params:xml:ns:yang:ietf-srv6-base">
       <locators>
@@ -69,7 +69,7 @@
   <control-plane-protocols>
     <control-plane-protocol>
       <type
-      xmlns:bgp="urn:ietf:params:xml:ns:yang:ietf-bgp">bgp:bgp</type>
+	  xmlns:bgp="urn:ietf:params:xml:ns:yang:ietf-bgp">bgp:bgp</type>
       <name>b1</name>
       <bgp
           xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp">
@@ -81,10 +81,10 @@
 	      <name
 		  xmlns:mup="urn:ietf:params:xml:ns:yang:ietf-mup">mup:ipv4-mup</name>
 	      <ipv4-mup xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
-		<route-policy>route-target-policy</route-policy>
 		<rts>
 		  <rt>
 		    <name>ipv4-mup</name>
+		    <route-policy>route-target-policy</route-policy>
 		    <route-targets>
 		      <route-target>
 			<target>100:4000</target>
