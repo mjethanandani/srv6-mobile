@@ -502,7 +502,7 @@ module ietf-mup {
                "/rt-pol:policy-definitions/" +
                "rt-pol:policy-definition/rt-pol:name";
           require-instance true;
-	      }
+        }
         description
           "Reference to the route policy containing set of
            route-targets.";
@@ -815,7 +815,7 @@ module ietf-mup {
     description
       "BGP policy conditions added to routing policy module.";
 
-    container match-mup {
+    container mup {
       description
         "Top-level container for MUP specific policy conditions.";
 
@@ -825,6 +825,15 @@ module ietf-mup {
         }
         description
           "Route type to match with.";
+      }
+
+      leaf prefix-set {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:defined-sets/" +
+               "rt-pol:prefix-sets/rt-pol:prefix-set/rt-pol:name";
+        }
+        description
+          "Prefix set to match with.";
       }
     }
   }

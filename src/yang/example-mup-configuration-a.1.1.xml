@@ -17,9 +17,9 @@
           <name>10</name>
           <conditions>
             <bgp-conditions xmlns="urn:ietf:params:xml:ns:yang:ietf-bgp-policy">
-	      <match-mup xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+	      <mup xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
 		<route-type>type-1-st</route-type>
-	      </match-mup>
+	      </mup>
 	    </bgp-conditions>
 	  </conditions>
 	  <actions xmlns="urn:ietf:params:xml:ns:yang:ietf-routing-policy">

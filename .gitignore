@@ -7,3 +7,6 @@ src/yang/#*#
 draft/draft-mahesh-bess-srv6-mup-yang-*.*
 bin/
 *-tree.txt
+
+# Mac built-in files
+.DS_Store
