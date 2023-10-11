@@ -473,14 +473,14 @@ module ietf-mup {
       }
 
       leaf route-policy {
-	type leafref {
-	  path "/rt-pol:routing-policy" +
-	       "/rt-pol:policy-definitions/" +
-	       "rt-pol:policy-definition/rt-pol:name";
-	  require-instance true;
-	}
-	description
-	  "Reference to the route policy containing set of
+        type leafref {
+          path "/rt-pol:routing-policy" +
+               "/rt-pol:policy-definitions/" +
+               "rt-pol:policy-definition/rt-pol:name";
+          require-instance true;
+        }
+        description
+          "Reference to the route policy containing set of
            route-targets.";
       }
       uses bgp-mup;
@@ -497,14 +497,14 @@ module ietf-mup {
       }
 
       leaf route-policy {
-	type leafref {
-	  path "/rt-pol:routing-policy" +
-	       "/rt-pol:policy-definitions/" +
-	       "rt-pol:policy-definition/rt-pol:name";
-	  require-instance true;
-	}
-	description
-	  "Reference to the route policy containing set of
+        type leafref {
+          path "/rt-pol:routing-policy" +
+               "/rt-pol:policy-definitions/" +
+               "rt-pol:policy-definition/rt-pol:name";
+          require-instance true;
+	      }
+        description
+          "Reference to the route policy containing set of
            route-targets.";
       }
       uses bgp-mup;
