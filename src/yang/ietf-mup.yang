@@ -275,6 +275,18 @@ module ietf-mup {
             "Name of the AFI/SAFI type.";
         }
 
+        leaf route-policy {
+	        type leafref {
+	          path "/rt-pol:routing-policy" +
+	               "/rt-pol:policy-definitions/" +
+	               "rt-pol:policy-definition/rt-pol:name";
+	            require-instance true;
+	        }
+	        description
+	          "Reference to the route policy containing set of
+             route-targets.";
+        }
+
         container route-targets {
           description
             "Route Targets for a network instance.";
@@ -472,17 +484,6 @@ module ietf-mup {
            IPv4 MUP.";
       }
 
-      leaf route-policy {
-	type leafref {
-	  path "/rt-pol:routing-policy" +
-	       "/rt-pol:policy-definitions/" +
-	       "rt-pol:policy-definition/rt-pol:name";
-	  require-instance true;
-	}
-	description
-	  "Reference to the route policy containing set of
-           route-targets.";
-      }
       uses bgp-mup;
       description
         "IPv4 MUP configuration and management.";
@@ -496,17 +497,6 @@ module ietf-mup {
            IPv6 MUP.";
       }
 
-      leaf route-policy {
-	type leafref {
-	  path "/rt-pol:routing-policy" +
-	       "/rt-pol:policy-definitions/" +
-	       "rt-pol:policy-definition/rt-pol:name";
-	  require-instance true;
-	}
-	description
-	  "Reference to the route policy containing set of
-           route-targets.";
-      }
       uses bgp-mup;
       description
         "IPv6 MUP configuration and management.";
