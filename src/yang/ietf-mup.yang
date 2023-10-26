@@ -835,6 +835,24 @@ module ietf-mup {
         description
           "Prefix set to match with.";
       }
+
+      leaf rule-set {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:defined-sets/" +
+               "string-sets/string-set/name";
+        }
+        description
+          "Pre defined rule set to match against.";
+      }
+
+      leaf id-set {
+        type leafref {
+          path "/rt-pol:routing-policy/rt-pol:defined-sets/" +
+               "string-sets/string-set/name";
+        }
+        description
+          "Application id set to match against.";
+      }
     }
   }
 
@@ -853,6 +871,51 @@ module ietf-mup {
         default false;
         description
           "Accept this route.";
+      }
+    }
+  }
+
+  augment "/rt-pol:routing-policy/rt-pol:defined-sets" {
+    description
+      "Augmentation of routing policy model to add
+       definition for string-sets.";
+
+    container string-sets {
+      description
+        "Container for all string-sets.";
+
+      list string-set {
+        key "name";
+
+        leaf name {
+          type string;
+          description
+            "A unique name identifying the name for this
+             string-set.";
+        }
+
+        leaf-list reference {
+          type leafref {
+            path "/rt-pol:routing-policy/rt-pol:defined-sets" +
+                 "/string-sets/string-set/name";
+          }
+          description
+            "A reference to other string-sets in the
+             collection.";
+        }
+
+        container strings {
+          description
+            "Container for all strings.";
+
+          leaf-list string {
+            type string;
+            description
+              "A leaf-list of strings.";
+          }
+        }
+        description
+	  "A list of string-sets.";
       }
     }
   }

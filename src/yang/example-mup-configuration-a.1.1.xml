@@ -37,6 +37,18 @@
       </statements>
     </policy-definition>
   </policy-definitions>
+  <defined-sets>
+    <string-sets xmlns="urn:ietf:params:xml:ns:yang:ietf-mup">
+      <string-set>
+	<name>pre-test</name>
+	<strings>
+	  <string>pre1</string>
+	  <string>pre2</string>
+	  <string>rule1</string>
+	</strings>
+      </string-set>
+    </string-sets>
+  </defined-sets>
 </routing-policy>
 
 <routing
