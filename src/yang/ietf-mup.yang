@@ -395,11 +395,14 @@ module ietf-mup {
           }
 
           leaf simple {
-            type boolean;
+            type uint32;
+            must ". < ../number";
             description
-              "Indicates that when MUP routes exceed number, routes
-               can still be added into the routing table, but the
-               system prompts alarms.
+              "Indicates the threshold value for number of MUP
+               routes that will be accepted. When MUP routes
+               exceed this number, routes can still be added
+               into the routing table, but the system prompts
+               alarms.
              
                However, after the total number of VPN routes and
                network public routes reaches the unicast route limit
