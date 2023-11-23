@@ -287,6 +287,31 @@ module ietf-mup {
              route-targets.";
         }
 
+        leaf direction {
+          type enumeration {
+            enum ingress {
+              description
+                "The route policy applies towards ingress
+                 traffic.";
+            }
+
+            enum egress {
+              description
+                "The route policy applies towards egress
+                 traffic.";
+            }
+
+            enum both {
+              description
+                "The route policy applies towards both
+                 ingress and egress direction.";
+            }
+          }
+          description
+            "Specifies the direction of traffic the route
+             policy applies to.";
+        }
+
         container route-targets {
           description
             "Route Targets for a network instance.";
