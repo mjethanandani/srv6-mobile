@@ -85,6 +85,7 @@ putting them under BGP.
 		  <rt>
 		    <name>ipv4-mup</name>
 		    <route-policy>route-target-policy</route-policy>
+			<direction>ingress</direction>
 		    <route-targets>
 		      <route-target>
 			<target>100:4000</target>
