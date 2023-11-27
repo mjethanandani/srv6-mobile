@@ -754,51 +754,6 @@ module ietf-mup {
     }
   }
 
-  /*
-   * Network Instance configuration.
-   */
-  augment "/ni:network-instances/ni:network-instance/ni:ni-type" {
-     description
-       "Augment network instance for per VRF MUP parameters";
-
-     case mup {
-      container mup {
-        description
-          "Configuration of MUP specific parameters";
-
-        container rd {
-          description
-            "Route distinguisher parameters.";
-          
-          leaf rd {
-            type union {
-              type rt-types:route-distinguisher;
-              type enumeration {
-                enum auto {
-                  description
-                    "Route distinguisher is assigned automatically.";
-                }
-              }
-            }
-            description
-              "Route distinguisher value.";
-            reference
-              "RFC 4364: BGP/MPLS IP Virtual Private Networks
-                         (VPNs).";
-          }
-
-          leaf auto-rd {
-            type rt-types:route-distinguisher;
-            config false;
-            description
-              "Automatically assigned RD value when rd is configured
-               as 'auto'.";
-          }
-        }
-      }
-    }
-  }
-
   augment "/rt-pol:routing-policy/rt-pol:policy-definitions/" +
           "rt-pol:policy-definition/rt-pol:statements/" +
           "rt-pol:statement/rt-pol:conditions/bp:bgp-conditions" {
