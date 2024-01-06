@@ -265,10 +265,9 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD.yang)
     <section anchor="IANA">
       <name>IANA Considerations</name>
 
-      <t>This memo registers the following namespace URIs in the IETF
-      XML in the "IETF XML Registry" <xref target="RFC3688"
-      format="default" sectionFormat="of"
-      derivedContent="RFC3688"/>:</t>
+      <t>This memo registers the following namespace URIs in the "IETF
+      XML Registry" <xref target="RFC3688" format="default"
+      sectionFormat="of" derivedContent="RFC3688"/>:</t>
 
       <dl newline="false" spacing="compact" indent="3">
         <dt>URI:</dt>
@@ -290,7 +289,7 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD.yang)
         <dt>Namespace:</dt>
         <dd>urn:ietf:params:xml:ns:yang:ietf-mup</dd>
         <dt>Prefix:</dt>
-        <dd>srv6-mob</dd>
+        <dd>srv6-mup</dd>
         <dt>Reference:</dt>
         <dd>RFC XXXX</dd>
       </dl>
