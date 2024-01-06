@@ -315,27 +315,74 @@ INSERT_TEXT_FROM_FILE(../bin/ietf-mup@YYYY-MM-DD.yang)
       preconfigured subset of all available NETCONF or RESTCONF
       protocol operations and content.</t>
 
-      <t>There are a number of data nodes defined in this YANG module
-      that are writable/creatable/deletable (i.e., config true, which
-      is the default). These data nodes may be considered sensitive or
-      vulnerable in some network environments. Write operations (e.g.,
-      edit-config) to these data nodes without proper protection can
-      have a negative effect on network operations. These are the
-      subtrees and data nodes and their sensitivity/vulnerability:</t>
+      <t>
+	There are a number of data nodes defined in this YANG module
+	that are writable/creatable/deletable (i.e., config true,
+	which is the default). These data nodes may be considered
+	sensitive or vulnerable in some network environments. Write
+	operations (e.g., edit-config) to these data nodes without
+	proper protection can have a negative effect on network
+	operations. These are the subtrees and data nodes and their
+	sensitivity/vulnerability:
+      </t>
 
-      <t>Some of the readable data nodes in this YANG module may be
-      considered sensitive or vulnerable in some network
-      environments. It is thus important to control read access (e.g.,
-      via get, get-config, or notification) to these data nodes. These
-      are the subtrees and data nodes and their
-      sensitivity/vulnerability:</t>
+      <ul>
+	<li>
+	  The attribute 'rt'. Route Target is used to control the
+	  distribution of routes within the service provider
+	  network. It defines which VRF instance should import or
+	  export a particular route. The ability to change the 'rt' by
+	  a malicious user will have an adverse impact on the network.
+	</li>
+	<li>
+	  The attribute 'routes' determines the maximum number of
+	  routes that will be accepted by the device. As such, an
+	  ability to change the limit MAY impact the device's ability
+	  to do what it is supposed to do.
+	</li>
+	<li>
+	  The attribute 'segment' defines the SRv6 segment that will
+	  be used by the device. The ability to change the 'segment'
+	  by a malicious user will have an adverse impact on the
+	  network.
+	</li>
+      </ul>
 
-      <t>Some of the RPC operations in this YANG module may be
-      considered sensitive or vulnerable in some network
-      environments. It is thus important to control access to these
-      operations. These are the operations and their
-      sensitivity/vulnerability:</t>
+      <t>
+	Some of the readable data nodes in this YANG module may be
+	considered sensitive or vulnerable in some network
+	environments. It is thus important to control read access
+	(e.g., via get, get-config, or notification) to these data
+	nodes. These are the subtrees and data nodes and their
+	sensitivity/vulnerability:
+      </t>
 
+      <ul>
+	<li>
+	  Most of the readable nodes in the YANG module reflect the
+	  state of connection. For example, 'sid-manager-connected'
+	  indicates whether the connection with the segment ID manager
+	  active, or 'locator-registered', which indicates whether the
+	  locator name is registered or not. The nodes are there to
+	  help debug a problem and reveal very little information that
+	  would be useful to a malicious user.
+	</li>
+      </ul>
+
+      <t>
+	Some of the RPC operations in this YANG module may be
+	considered sensitive or vulnerable in some network
+	environments. It is thus important to control access to these
+	operations. These are the operations and their
+	sensitivity/vulnerability:
+      </t>
+      <ul>
+	<li>
+	  The RPC operation 'clear' used to clear the statistics can
+	  be use to clear the statistics gathered by the device. It
+	  can therefore interfere in the ability to debug the system.
+	</li>
+      </ul>
     </section>
     
     <!-- NOTE: The Acknowledgements and Contributors sections are at the end of this template -->
